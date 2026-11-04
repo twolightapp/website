@@ -69,3 +69,8 @@ p, ul { margin: 0 0 1em; }
 footer { border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--muted); font-size: 14px; }
 footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 footer a { color: var(--muted); }
+
+/* Product film under the hero (added when the video is ready) */
+.film { margin: 8px auto 12px; max-width: 760px; }
+.film video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9;
+  border-radius: 24px; background: var(--card); border: 1px solid var(--line); }
