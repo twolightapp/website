@@ -83,3 +83,33 @@ footer a { color: var(--muted); }
   stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .film .sound .on, .film .sound[aria-pressed="true"] .off { display: none; }
 .film .sound[aria-pressed="true"] .on { display: block; }
+
+/* Compact feature tiles: two per row on phones, and the odd one out spans the row */
+@media (max-width: 559px) {
+  .grid.tiles { grid-template-columns: 1fr 1fr; gap: 10px; margin: 18px 0; }
+  .grid.tiles .card { padding: 14px; border-radius: 16px; }
+  .grid.tiles .card:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .grid.tiles h3 { font-size: 16px; }
+  .grid.tiles h3 .dot { width: 8px; height: 8px; margin-right: 6px; vertical-align: 1px; }
+  .grid.tiles p { font-size: 14.5px; line-height: 1.45; }
+}
+
+/* Plus: one checklist card instead of a card per feature */
+.checks { list-style: none; margin: 22px 0; padding: 8px 20px; }
+.checks li { display: flex; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line);
+  color: var(--muted); font-size: 15.5px; line-height: 1.45; break-inside: avoid; }
+.checks li:first-child { border-top: 0; }
+.checks strong { color: var(--ink); font-weight: 600; }
+.checks svg { flex: none; width: 20px; height: 20px; margin-top: 1px; fill: none;
+  stroke: var(--partner); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+@media (min-width: 700px) {
+  .checks { display: grid; grid-template-columns: 1fr 1fr; column-gap: 32px; padding: 8px 24px; }
+  .checks li:nth-child(2) { border-top: 0; }   /* first row has no divider */
+}
+@media (max-width: 559px) {
+  .checks { padding: 4px 16px; }
+  .checks li { padding: 9px 0; font-size: 15px; line-height: 1.4; }
+  .price .card { flex-basis: 0; min-width: 0; padding: 16px; }
+  .price .card p { font-size: 14px; }
+}
+.price + p { margin-top: 12px; }
