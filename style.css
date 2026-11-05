@@ -70,7 +70,16 @@ footer { border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--m
 footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 footer a { color: var(--muted); }
 
-/* Product film under the hero (added when the video is ready) */
-.film { margin: 8px auto 12px; max-width: 760px; }
-.film video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9;
-  border-radius: 24px; background: var(--card); border: 1px solid var(--line); }
+/* Product film under the hero */
+.film { position: relative; margin: 8px auto 12px; max-width: 600px; }
+.film video { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1;
+  border-radius: 24px; background: #F2EEE8; border: 1px solid var(--line); }
+.film .sound { position: absolute; right: 14px; bottom: 14px; width: 44px; height: 44px;
+  border: 0; border-radius: 50%; background: rgba(34, 28, 24, .72); color: #F5EFE7;
+  display: grid; place-items: center; cursor: pointer; }
+.film .sound:hover { background: rgba(34, 28, 24, .88); }
+.film .sound:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.film .sound svg { width: 22px; height: 22px; fill: currentColor; stroke: currentColor;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.film .sound .on, .film .sound[aria-pressed="true"] .off { display: none; }
+.film .sound[aria-pressed="true"] .on { display: block; }

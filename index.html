@@ -36,6 +36,32 @@
     <span class="pill">Coming soon to the App Store</span>
   </section>
 
+  <figure class="film">
+    <video id="film" autoplay muted loop playsinline preload="metadata" poster="/media/twolight-poster.jpg"
+      aria-label="Twolight on iPhone: both schedules on the Home Screen, a partner's usual order at the coffee shop, one tap for on my way, the arrival time in the Dynamic Island, the shared calendar and the talk light.">
+      <source src="/media/twolight.mp4" type="video/mp4">
+    </video>
+    <button class="sound" type="button" aria-pressed="false" aria-label="Turn sound on">
+      <svg class="off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6" fill="none"/></svg>
+      <svg class="on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" fill="none"/></svg>
+    </button>
+  </figure>
+  <script>
+    (function () {
+      var v = document.getElementById('film'), b = document.querySelector('.film .sound');
+      if (!v || !b) return;
+      // Reduced motion: show the still frame with controls instead of autoplaying.
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) { v.removeAttribute('autoplay'); v.pause(); v.controls = true; }
+      // Browsers only autoplay muted; this turns the music on and off.
+      b.addEventListener('click', function () {
+        v.muted = !v.muted;
+        if (!v.muted && v.paused) v.play();
+        b.setAttribute('aria-pressed', String(!v.muted));
+        b.setAttribute('aria-label', v.muted ? 'Turn sound on' : 'Turn sound off');
+      });
+    })();
+  </script>
+
   <h2>Built around your shifts</h2>
   <div class="grid">
     <div class="card"><h3><span class="dot"></span>Two schedules, one glance</h3><p>Day, night and split shifts, PTO in a few taps, and your next evening together at the top of Today.</p></div>
