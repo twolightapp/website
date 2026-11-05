@@ -113,3 +113,9 @@ footer a { color: var(--muted); }
   .price .card p { font-size: 14px; }
 }
 .price + p { margin-top: 12px; }
+
+/* Printing (or saving as PDF): no sound button, cards don't split across pages */
+@media print {
+  .film .sound { display: none; }
+  .card:not(.checks), .checks li { break-inside: avoid; }
+}
