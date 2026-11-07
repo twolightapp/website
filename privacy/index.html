@@ -16,7 +16,7 @@
 
 <main class="wrap doc">
   <h1>Privacy Policy</h1>
-  <p class="muted">Effective November 6, 2026</p>
+  <p class="muted">Version 1.2 · Effective November 6, 2026</p>
   <p>This policy explains how Twolight, an app by Christian Almanza ("we", "us"), handles your information. Questions: <a href="mailto:support@twolightapp.com">support@twolightapp.com</a>.</p>
 
   <h2>The short version</h2>
@@ -25,6 +25,7 @@
     <li><strong>Your information stays on your iPhone and in iCloud, through Apple,</strong> encrypted on your iPhone before it's stored. Your private things go to your own iCloud; what you share with your partner goes to a space only the two of you can open.</li>
     <li><strong>Your partner sees only what Twolight shares between partners,</strong> and only after you approve them by name.</li>
     <li><strong>Your location is never sent to your partner,</strong> and never to us.</li>
+    <li><strong>Notifications to your partner pass through a small service we run</strong> that hands them to Apple and keeps no record of them. They say who sent what kind of thing, never the words you wrote.</li>
     <li><strong>No ads, no analytics, no tracking,</strong> and we never sell or share your information.</li>
     <li><strong>Apple Intelligence features run on your iPhone.</strong> What you write isn't sent anywhere to use them.</li>
   </ul>
@@ -50,12 +51,18 @@
   <ul>
     <li><strong>iCloud (CloudKit)</strong> keeps a copy of your information (never your home, work or any location) in your own iCloud account and, once you pair, syncs what you share between your two phones. The shared space lives in the iCloud of whoever sent the invite, and only the two of you can open it. What you write is encrypted on your iPhone before it's stored, with keys in your iCloud Keychain (end-to-end encryption), so neither we nor Apple can read it; Apple can see basic details, like how much is stored and when it changed. If you're not signed in to iCloud, everything stays on your iPhone.</li>
     <li><strong>Apple Maps</strong> receives the search (for example "pizza") and an approximate area when you use Surprise us, to find places nearby. When you set home or work, it receives the address you search for, or the point you pick on the map, to show you the street address. When you tap Heading home, Heading to work or head somewhere else, it also receives where you are at that moment and where you're going (your home or work point, or the place you picked), once, to estimate the drive with current traffic. When you head somewhere else, it also receives what you search for. If a favorite is linked to a place (like Starbucks), then when you open Twolight it receives where you are, once, to see if you're at one; nothing runs while the app is closed. If you turn on Live updates on the way, it receives where you are every few minutes during that trip only, to keep the estimate current. Your partner sees only the estimated arrival time, never where you are.</li>
+    <li><strong>Apple Push Notification service</strong> delivers the notifications your partner's actions send you (see Notifications between partners, below).</li>
+    <li><strong>App Attest</strong> lets your iPhone prove to our notification service that requests come from the real Twolight app.</li>
     <li><strong>Siri</strong> handles your voice when you use a Twolight shortcut.</li>
     <li><strong>The App Store</strong> handles subscriptions and payments. We never see your payment details.</li>
   </ul>
 
   <h2>What your partner sees</h2>
-  <p>Once you pair and approve them, your partner sees what Twolight shares between partners: your name and love language (if you set one), your work hours and day changes, chores between you, hugs, kisses, praise and wake notes, your talk light and any note on it, running late, heading home or heading to work (with when you'll arrive) or heading somewhere else (with the name you give it, if any), your energy status if you set one, the grocery list, date plans, the shared plans you add (family events, outings, appointments) and whether they've seen them, favorites about yourself that you choose to share (like your coffee order), any reflection you choose to share, and, if you subscribe to Plus, when your subscription ends (so it covers them too). They never see your location, the favorites and gift ideas you keep about them, your private reflections, your journal, or your check-in notes. Either of you can unpair at any time, which stops future sharing; it can't take back what was already seen.</p>
+  <p>Once you pair and approve them, your partner sees what Twolight shares between partners: your name and love language (if you set one), your work hours and day changes, chores between you, hugs, kisses, praise and wake notes, your talk light and any note on it, running late, heading home or heading to work (with when you'll arrive) or heading somewhere else (with the place you share, if any: its name and street, which you can change or clear before sending), your energy status if you set one, the grocery list, date plans, the shared plans you add (family events, outings, appointments) and whether they've seen them, favorites about yourself that you choose to share (like your coffee order), any reflection you choose to share, and, if you subscribe to Plus, when your subscription ends (so it covers them too). They never see your location, the favorites and gift ideas you keep about them, your private reflections, your journal, or your check-in notes. Either of you can unpair at any time, which stops future sharing; it can't take back what was already seen.</p>
+
+  <h2>Notifications between partners</h2>
+  <p>When you send your partner something, like a hug, a chore or a change to your talk light, Twolight asks a small service we run on Cloudflare to hand a notification to Apple, which delivers it to their iPhone. The notification says only who it's from and what kind of thing it is (for example "Sam sent you a hug"), never the words you wrote. If you share where you're headed, the place is sealed on your iPhone so that only your partner's iPhone can open it; our service, Cloudflare and Apple can't read it. Your partner can also choose to hide the place on their Lock Screen until their iPhone is unlocked.</p>
+  <p>Our service keeps no record of notifications: no log, no copy, and nothing about who sent what to whom. Your IP address is used for a moment to limit abuse, held in a counter that clears within a minute, and isn't stored. The address Apple uses to reach your partner's iPhone is kept in the space you share, not by us. To make sure requests come from the real Twolight app, each install registers a key through Apple's App Attest. We keep the public half of that key, which says nothing about you or your iPhone, and delete it after 180 days without use.</p>
 
   <h2>Your journal</h2>
   <p>The journal is just for you. Your pages, the mood you pick, and their photos and videos are never shared with your partner. The words and mood are also kept in your own iCloud, end-to-end encrypted, never in the space you share; photos and videos stay on your iPhone for now. The mood is only a record: Twolight doesn't analyze it, react to it or use it for anything. You can back up everything at any time (Settings → Back up everything) as a file that opens in any web browser and can be restored into Twolight.</p>
@@ -64,7 +71,7 @@
   <p>Each is asked only when you first use the feature that needs it, and you can change it any time in iOS Settings.</p>
   <table>
     <tr><th>Permission</th><th>Used for</th><th>Not used for</th></tr>
-    <tr><td>Notifications</td><td>Reminders for chores, dates, birthdays and check-ins</td><td>Marketing</td></tr>
+    <tr><td>Notifications</td><td>Reminders for chores, dates, birthdays and check-ins, and letting you know when your partner sends you something</td><td>Marketing</td></tr>
     <tr><td>Location (while using the app)</td><td>Setting home or work, finding places for Surprise us, and estimating your drive when you tap Heading home or Heading to work, and showing a favorite when you open the app at the place it's linked to</td><td>Tracking you, or telling your partner where you are</td></tr>
     <tr><td>Location (Always), optional</td><td>Only if you turn on Live updates on the way: keeping your arrival time accurate during a trip you started (home, work or somewhere else), noticing when you actually leave, and ending the trip when you arrive. It starts when you tap and stops when you get there, clear the trip, or it times out</td><td>Anything outside a trip, storing where you've been, or telling your partner where you are</td></tr>
     <tr><td>Calendar</td><td>Adding dates you've locked in and shared plans, if you turn that on</td><td>Reading your calendar</td></tr>
