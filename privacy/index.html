@@ -16,12 +16,12 @@
 
 <main class="wrap doc">
   <h1>Privacy Policy</h1>
-  <p class="muted">Version 1.2 · Effective November 8, 2026</p>
+  <p class="muted">Version 1.3 · Effective November 10, 2026</p>
   <p>This policy explains how Twolight, an app by Christian Almanza ("we", "us"), handles your information. Questions: <a href="mailto:support@twolightapp.com">support@twolightapp.com</a>.</p>
 
   <h2>The short version</h2>
   <ul>
-    <li><strong>We don't collect your data.</strong> We have no servers that store what you put in Twolight, and we can't see it.</li>
+    <li><strong>We don't collect what you put in Twolight.</strong> We have no servers that store it, and we can't see it. The one thing we keep is a random security key ID for each install, to block forged notifications (see Notifications between partners). It isn't linked to you.</li>
     <li><strong>Your information stays on your iPhone and in iCloud, through Apple,</strong> encrypted on your iPhone before it's stored. Your private things go to your own iCloud; what you share with your partner goes to a space only the two of you can open.</li>
     <li><strong>Your partner sees only what Twolight shares between partners,</strong> and only after you approve them by name.</li>
     <li><strong>Your location is never sent to your partner,</strong> and never to us.</li>
@@ -62,7 +62,7 @@
 
   <h2>Notifications between partners</h2>
   <p>When you send your partner something, like a hug, a chore or a change to your talk light, Twolight asks a small service we run on Cloudflare to hand a notification to Apple, which delivers it to their iPhone. The notification says only who it's from and what kind of thing it is (for example "Sam sent you a hug"), never the words you wrote. If you share where you're headed, the place is sealed on your iPhone so that only your partner's iPhone can open it; our service, Cloudflare and Apple can't read it. Your partner can also choose to hide the place on their Lock Screen until their iPhone is unlocked.</p>
-  <p>Our service keeps no record of notifications: no log, no copy, and nothing about who sent what to whom. Your IP address is used for a moment to limit abuse, held in a counter that clears within a minute, and isn't stored. The address Apple uses to reach your partner's iPhone is kept in the space you share, not by us. To make sure requests come from the real Twolight app, each install registers a key through Apple's App Attest. We keep the public half of that key, which says nothing about you or your iPhone, and delete it after 180 days without use.</p>
+  <p>Our service keeps no record of notifications: no log, no copy, and nothing about who sent what to whom. Your IP address is used for a moment to limit abuse, held in a counter that clears within a minute, and isn't stored. The address Apple uses to reach your partner's iPhone is kept in the space you share, not by us. To make sure requests come from the real Twolight app, each install registers a key through Apple's App Attest. We keep that key's public half and its random ID, with a counter and the date it was last used, so each request can be checked. It isn't linked to your name, your Apple Account or anything you write, and it's deleted after 180 days without use. In the App Store's privacy terms this is a device identifier, used only for app functionality (security), not linked to you and never used for tracking.</p>
 
   <h2>Your journal</h2>
   <p>The journal is just for you. Your pages, the mood you pick, and their photos and videos are never shared with your partner. The words, mood, photos and videos are also kept in your own iCloud, end-to-end encrypted, never in the space you share. The mood is only a record: Twolight doesn't analyze it, react to it or use it for anything. You can back up everything at any time (Settings → Back up everything) as a file that opens in any web browser and can be restored into Twolight.</p>
