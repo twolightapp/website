@@ -141,9 +141,9 @@ html { scroll-padding-top: 24px; }
 .price small { font-size: 12px; margin-top: 5px; }
 .trial { color: var(--accent); font-size: 13px; }
 .billing { color: var(--muted); font-size: 13px; max-width: 780px; margin: 24px 0 0; }
-.privacy-note { display: grid; grid-template-columns: 100px 1fr; gap: 32px; padding-block: 80px; }
-.privacy-note img { border-radius: 18px; margin-top: 6px; }
-.privacy-note > div { max-width: 740px; }
+.privacy-note { display: grid; grid-template-columns: .8fr 1.2fr; gap: 64px; padding-block: 80px; }
+.privacy-note img { display: block; border-radius: 18px; margin-bottom: 24px; }
+.privacy-copy { max-width: 640px; padding-top: 136px; }
 .privacy-note p:not(.eyebrow) { color: var(--muted); }
 .text-link { text-decoration-thickness: 1px; text-underline-offset: 5px; font-size: 15px; }
 .faq-section { display: grid; grid-template-columns: .8fr 1.2fr; gap: 64px; padding-block: 32px 72px; }
@@ -176,6 +176,8 @@ details p { color: var(--muted); line-height: 1.7; }
  .plan { padding: 26px; }
  .plus-section { padding-block: 36px; }
  .privacy-note { grid-template-columns: 1fr; gap: 20px; padding-block: 48px; }
+ .privacy-copy { padding-top: 0; }
+ .privacy-note img { margin-bottom: 16px; }
  .privacy-note img { width: 54px; height: 54px; }
  .faq-section { padding-block: 12px 48px; }
  .section-heading { margin-bottom: 32px; }
