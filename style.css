@@ -257,3 +257,7 @@ details p { color: var(--muted); line-height: 1.7; }
 .not-found .brand { justify-content: center; margin-bottom: 48px; }
 .not-found .lede { margin: 24px auto; max-width: 26em; }
 .not-found-help { margin: 28px 0 0; color: var(--muted); font-size: 15px; }
+
+@media (max-width: 370px) {
+ .feature-track { margin-inline: -20px; padding-inline: 20px; scroll-padding-inline: 20px; }
+}
