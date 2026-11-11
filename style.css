@@ -191,7 +191,8 @@ details p { color: var(--muted); line-height: 1.7; }
    margin-inline: -24px; padding: 4px 24px 12px; scroll-padding-inline: 24px; scrollbar-width: none; }
  .feature-track::-webkit-scrollbar { display: none; }
  .feature-track > article { flex: 0 0 86%; scroll-snap-align: start; margin: 0; }
- .feature-track > .feature { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 22px; gap: 18px; align-content: start; }
+ .feature-track > .feature { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 22px; gap: 18px; }
+ .feature-track > .feature > .product-still { margin-top: auto; }
  .feature-track .feature-copy h3 { font-size: 26px; }
  .feature-track .product-still { max-width: none; }
 }
