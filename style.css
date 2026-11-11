@@ -191,6 +191,24 @@ details p { color: var(--muted); line-height: 1.7; }
  .home h1 { font-size: 38px; }
  .home .price { grid-template-columns: 1fr; }
 }
+/* A quiet signature: warm/cool light meeting behind the real app. No content depends on motion. */
+.hero-product::before { background: radial-gradient(ellipse at 28% 42%, #e8a68140, transparent 62%), radial-gradient(ellipse at 78% 58%, #8abbb42b, transparent 58%); }
+.home h1 em { position: relative; display: inline-block; }
+.home h1 em::after { content: ""; position: absolute; left: 2%; right: 0; bottom: -.1em; height: .12em; border-bottom: 1px solid currentColor; border-radius: 50%; opacity: .5; }
+@media (prefers-reduced-motion: no-preference) {
+ @keyframes light-meets-light { from { transform: scale(.88) rotate(-5deg); opacity: .35; } to { transform: scale(1) rotate(0); opacity: 1; } }
+ .hero-product::before { animation: light-meets-light 1.8s ease-out both; }
+ @supports (animation-timeline: view()) {
+  .intro-strip { position: relative; }
+  .intro-strip::after { content: ""; position: absolute; bottom: -1px; left: 0; width: 100%; height: 1px; background: var(--accent); transform-origin: left; animation: shared-line linear both; animation-timeline: view(); animation-range: entry 0% cover 45%; }
+  @keyframes shared-line { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+ }
+ @media (hover: hover) and (pointer: fine) {
+  .button { transition: transform .2s ease, background-color .2s ease; }
+  .button:hover { transform: translateY(-2px); }
+ }
+}
+
 /* Feature stories: a swipeable row on phones (CSS only, no script); unchanged on wider screens. */
 .story-nav { display: none; }
 @media (max-width: 760px) {
