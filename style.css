@@ -84,7 +84,7 @@ html { scroll-padding-top: 24px; }
 .home h2 { font-size: clamp(32px, 4.2vw, 48px); margin: 0 0 20px; letter-spacing: -.025em; }
 .home h3 { font-size: clamp(29px, 3.2vw, 40px); margin: 0 0 20px; letter-spacing: -.02em; }
 .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .16em; color: var(--accent); margin-bottom: 20px; }
-.home .hero { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 48px; text-align: left; padding-block: 64px; }
+.home .hero { display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; gap: 40px; text-align: left; padding-block: 56px; }
 .home h1 { font-size: clamp(42px, 5vw, 66px); line-height: 1.08; letter-spacing: -.035em; margin-bottom: 24px; }
 .home h1 em { font-style: normal; color: var(--accent); }
 .home .hero .lede { font-size: 19px; line-height: 1.65; margin: 0 0 28px; max-width: 26em; }
@@ -93,6 +93,9 @@ html { scroll-padding-top: 24px; }
 .availability { color: var(--muted); font-size: 13px; margin: 18px 0 0; }
 .availability span { color: #8abbb4; padding-right: 6px; font-size: 10px; }
 .film { margin: 0; }
+.hero-product { position: relative; isolation: isolate; }
+.hero-product::before { content: ""; position: absolute; inset: -5% -5% 10%; z-index: -1; border-radius: 50%; background: radial-gradient(ellipse, #e8a68128, transparent 70%); pointer-events: none; }
+.hero-product video { box-shadow: 0 24px 64px #0003; border: 1px solid #ffffff24; }
 .film video { display: block; width: 100%; aspect-ratio: 1; border-radius: 22px; background: #f5efe7; color-scheme: dark; }
 .film figcaption { font-size: 12px; line-height: 1.5; margin-top: 14px; color: var(--muted); }
 .film figcaption span { display: block; margin-top: 4px; }
