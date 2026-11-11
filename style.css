@@ -251,3 +251,9 @@ details p { color: var(--muted); line-height: 1.7; }
  .film video { display: none; }
  .feature, .plan { break-inside: avoid; }
 }
+
+/* A small, useful dead-end recovery page. */
+.not-found { min-height: 85svh; padding-block: clamp(48px, 12vh, 120px); text-align: center; }
+.not-found .brand { justify-content: center; margin-bottom: 48px; }
+.not-found .lede { margin: 24px auto; max-width: 26em; }
+.not-found-help { margin: 28px 0 0; color: var(--muted); font-size: 15px; }
