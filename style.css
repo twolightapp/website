@@ -109,6 +109,8 @@ html { scroll-padding-top: 24px; }
 .feature.reverse .feature-copy { order: 2; }
 .product-still { margin: 0; background: #f5efe7; color: #6b5f57; border-radius: 24px; overflow: hidden; }
 .product-still img { display: block; width: 100%; height: auto; }
+.still-window { position: relative; aspect-ratio: 1; overflow: hidden; }
+.still-window img { position: absolute; width: 130%; max-width: none; left: -15%; top: -22%; }
 .product-still figcaption { text-align: center; padding: 0 16px 18px; font-size: 12px; }
 .plain-list { list-style: none; padding: 0; margin: 24px 0; }
 .plain-list li { padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
