@@ -17,7 +17,7 @@ Shorter two-column dark hero, peach working anchor CTA, plain coming-soon status
 
 Calendar and talk images are exact frames at 22s and 25s from the repo's existing `media/twolight.mp4`; no invented app UI. The memories section is editorial text, not a fabricated screenshot (no genuine memory capture was supplied). Existing film, poster, icon, fonts and price amounts retained. Plus disclosure stays beside the film. Prices identified as USD; App Store local prices/eligibility govern. No App Store download link fabricated before launch.
 
-Support answers copied into semantic details/summary from AskMe `docs/features/support-faq.md`; personal contact and existing safety introduction retained. Original support topics on pairing, backups and subscriptions are covered in the new answers; Privacy/Terms links remain available. Legal page body text is unchanged; only shared stylesheet version, main ID and skip-link markup changed.
+Support answers adapted into semantic details/summary (including Claude’s outage guidance, with absolute delivery/data guarantees softened) from AskMe `docs/features/support-faq.md`; personal contact and existing safety introduction retained. Original support topics on pairing, backups and subscriptions are covered in the new answers; Privacy/Terms links remain available. Legal page body text is unchanged; only shared stylesheet version, main ID and skip-link markup changed.
 
 ## Validation and limits
 
