@@ -263,3 +263,115 @@ details p { color: var(--muted); line-height: 1.7; }
 @media (max-width: 370px) {
  .feature-track { margin-inline: -20px; padding-inline: 20px; scroll-padding-inline: 20px; }
 }
+
+/* ---------- Things you can try (app.js). Every state is readable without motion. ---------- */
+.home { --glow: #E9B930; --partner-ink: #fffaf5; --spring: cubic-bezier(.3, 1.35, .5, 1); }
+@media (prefers-color-scheme: dark) { .home { --partner-ink: #15171c; } }
+@supports (transition-timing-function: linear(0, 1)) {
+ .home { --spring: linear(0, .006, .025 2.8%, .101 6.1%, .539 18.9%, .721 25.3%, .849 31.5%, .937 38.1%, .968 41.8%, .991 45.7%, 1.006 50.1%, 1.015 55%, 1.017 63.9%, 1.001); }
+}
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+/* The Overlap: your shifts and theirs, and the evening you share. */
+.home .hero { grid-template-areas: "copy demo" "cta demo"; grid-template-rows: auto auto; gap: 0 40px; align-items: start; }
+.hero-copy { grid-area: copy; align-self: end; }
+.hero-demo { grid-area: demo; align-self: center; }
+.hero-cta { grid-area: cta; }
+.overlap { margin: 0; display: grid; gap: 18px; padding: 24px; background: var(--card); border: 1px solid var(--line); border-radius: 24px; box-shadow: 0 24px 64px #0000001f; }
+.overlap-title { margin: 0; font: 600 21px "Fraunces", Georgia, serif; }
+.overlap fieldset, .td-pick fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.overlap legend { padding: 0; margin-bottom: 8px; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.overlap .them legend { color: var(--partner); }
+.seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.seg label { position: relative; }
+.seg input, .lvl input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.seg span { display: flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 6px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); font-size: 15px; }
+.seg input:checked + span { border-color: transparent; font-weight: 600; background: var(--button-bg); color: var(--button-ink); }
+.them .seg input:checked + span { background: var(--partner); color: var(--partner-ink); }
+.seg input:focus-visible + span, .lvl input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 3px; }
+.strip { display: grid; grid-template-columns: 38px 1fr; column-gap: 8px; }
+.whos, .tracks { display: grid; grid-template-rows: 32px 32px; row-gap: 10px; padding-top: 22px; }
+.whos span { align-self: center; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.whos span + span { color: var(--partner); }
+.tracks { position: relative; grid-template-rows: 32px 32px auto; }
+.track { position: relative; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
+.bar, .band { left: calc(var(--l) * 1%); width: calc(var(--w) * 1%); }
+.bar { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 9px; font-size: 11px; white-space: nowrap; }
+.bar.work.me { background: var(--button-bg); color: var(--button-ink); font-weight: 600; }
+.bar.work.them { background: var(--partner); color: var(--partner-ink); font-weight: 600; }
+.bar.sleep { background: var(--line); color: var(--ink); }
+.band { position: absolute; z-index: 1; top: 16px; height: 86px; border: 1.5px solid var(--glow); border-radius: 12px; background: color-mix(in srgb, var(--glow) 28%, transparent); pointer-events: none; }
+.band i { position: absolute; top: -19px; left: 0; right: 0; text-align: center; font-style: normal; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.band.none { opacity: 0; }
+.ticks { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); }
+.answer { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--bg); }
+.answer i { flex: none; width: 14px; height: 14px; border-radius: 50%; background: var(--glow); box-shadow: 0 0 0 6px color-mix(in srgb, var(--glow) 25%, transparent); }
+.answer p { margin: 0; min-width: 0; }
+.answer small, .answer span { display: block; font-size: 13px; color: var(--muted); }
+.answer strong { display: block; font: 600 clamp(22px, 2.4vw, 27px)/1.25 "Fraunces", Georgia, serif; }
+.overlap-note { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
+
+/* The talk light: your phone on one side, Sam's Lock Screen on the other. */
+.talk-figure { margin: 0; padding: 20px; background: var(--card); border: 1px solid var(--line); border-radius: 24px; }
+.talk-figure figcaption { margin-top: 14px; text-align: center; font-size: 13px; color: var(--muted); }
+.talk-demo { --lv: #E9B930; --lv-ink: #221c18; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.talk-demo[data-level="green"] { --lv: #3E9A62; --lv-ink: #14231a; }
+.talk-demo[data-level="red"] { --lv: #C8372D; --lv-ink: #fff; }
+.talk-demo [hidden] { display: none; }
+.td-side { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.td-cap { margin: 0; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.td-pick, .td-pick fieldset { display: grid; gap: 8px; }
+.td-pick legend { padding: 0; margin-bottom: 4px; font: 600 20px "Fraunces", Georgia, serif; }
+.lvl { position: relative; }
+.lvl span { display: grid; grid-template-columns: 14px 1fr; gap: 2px 10px; align-items: center; min-height: 52px; padding: 9px 12px; border: 2px solid var(--line); border-radius: 14px; background: var(--bg); }
+.lvl i { grid-row: span 2; width: 14px; height: 14px; border-radius: 50%; background: var(--dot); }
+.lvl b { font-size: 14px; }
+.lvl small { font-size: 12px; line-height: 1.35; color: var(--muted); }
+.lvl input:checked + span { border-color: var(--dot); }
+.td-btn { display: block; width: 100%; min-height: 48px; padding: 10px 16px; border: 1px solid var(--ink); border-radius: 14px; background: var(--ink); color: var(--bg); font: 600 15px "DM Sans", system-ui, sans-serif; cursor: pointer; }
+.td-btn.quiet { background: transparent; color: var(--ink); border-color: var(--line); }
+.td-on { display: grid; gap: 12px; justify-items: center; text-align: center; padding-top: 8px; }
+.td-on > i { width: 60px; height: 60px; border-radius: 50%; background: var(--lv); box-shadow: 0 0 30px color-mix(in srgb, var(--lv) 75%, transparent); }
+.td-state { margin: 0; }
+.td-state strong { display: block; font-size: 16px; }
+.td-state span, .td-thanks { font-size: 14px; color: var(--muted); }
+.td-thanks { margin: 0; color: var(--ink); font-weight: 600; }
+.lock { flex: 1; display: flex; flex-direction: column; align-items: center; min-height: 250px; padding: 18px 12px 12px; border-radius: 22px; background: #1b2130; color: #fff; text-align: center; transition: box-shadow .4s ease; }
+.talk-demo[data-state="on"] .lock { box-shadow: 0 0 0 2px var(--lv), 0 0 44px -6px var(--lv); }
+.lock p { margin: 0; }
+.lock-date { font-size: 13px; opacity: .85; }
+.lock-time { font: 600 52px/1.1 ui-rounded, "SF Pro Rounded", system-ui, sans-serif; }
+.lock-empty { margin-top: auto !important; padding: 14px; font-size: 13px; opacity: .7; }
+.la { margin-top: auto; width: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; padding: 14px; border-radius: 18px; background: #fffaf5; color: #221c18; text-align: left; }
+.la > i { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--lv); box-shadow: 0 0 10px color-mix(in srgb, var(--lv) 70%, transparent); }
+.la p { flex: 1 1 110px; min-width: 0; }
+.la strong, .la span { display: block; }
+.la strong { font-size: 15px; line-height: 1.3; }
+.la span { font-size: 12.5px; color: #6b5f57; }
+.la-here { flex: 1 0 auto; min-height: 44px; padding: 9px 18px; border: 0; border-radius: 999px; background: var(--lv); color: var(--lv-ink); font: 600 14px "DM Sans", system-ui, sans-serif; cursor: pointer; }
+.la-here:focus-visible { outline-color: #221c18; outline-offset: 3px; }
+
+/* The film now closes the page: the maker's story, after the couple's. */
+.closing-film { max-width: 520px; margin: 36px auto 10px; }
+.closing-film video { box-shadow: 0 24px 64px #0003; border: 1px solid #ffffff24; }
+
+@media (max-width: 1000px) { .talk-demo { grid-template-columns: 1fr; } .lock { min-height: 220px; } }
+@media (max-width: 760px) {
+ .home .hero { grid-template-areas: "copy" "demo" "cta"; gap: 22px 0; }
+ .home .hero .lede { margin-bottom: 0; }
+ .overlap { padding: 18px; gap: 16px; }
+ .talk-figure { padding: 0; border: 0; background: none; }
+ .feature-track > .feature > .talk-figure { margin-top: auto; }
+}
+@media (max-width: 370px) { .seg span { font-size: 14px; } .bar { font-size: 10px; } .strip { grid-template-columns: 32px 1fr; } }
+@media (prefers-reduced-motion: no-preference) {
+ .bar, .band { transition: left .75s var(--spring), width .75s var(--spring), opacity .3s ease; }
+ .seg span, .lvl span { transition: background-color .2s ease, border-color .2s ease, color .2s ease; }
+ @keyframes found { 0% { transform: scale(.6); } 60% { transform: scale(1.25); } 100% { transform: scale(1); } }
+ .answer.lit i { animation: found .7s var(--spring) both; }
+ @keyframes arrives { from { opacity: 0; transform: translateY(22px) scale(.94); } to { opacity: 1; transform: none; } }
+ .la { animation: arrives .7s var(--spring) both; }
+ @keyframes glows { from { transform: scale(.5); opacity: 0; } to { transform: none; opacity: 1; } }
+ .td-on > i { animation: glows .6s var(--spring) both; }
+}
+@media print { .overlap fieldset, .talk-demo .td-btn { display: none; } }
