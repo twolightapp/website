@@ -271,13 +271,10 @@ details p { color: var(--muted); line-height: 1.7; }
 }
 .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 
-/* The Overlap: your shifts and theirs, and the evening you share. */
-.home .hero { grid-template-areas: "copy demo" "cta demo"; grid-template-rows: auto auto; gap: 0 40px; align-items: start; }
-.hero-copy { grid-area: copy; align-self: end; }
-.hero-demo { grid-area: demo; align-self: center; }
-.hero-cta { grid-area: cta; }
+/* The Overlap: right under the film. Watch, then try it with your own shifts. */
+.try { display: grid; grid-template-columns: .8fr 1.2fr; gap: 64px; align-items: center; padding-block: 24px 80px; }
+.try-copy p:not(.eyebrow) { color: var(--muted); max-width: 26em; }
 .overlap { margin: 0; display: grid; gap: 18px; padding: 24px; background: var(--card); border: 1px solid var(--line); border-radius: 24px; box-shadow: 0 24px 64px #0000001f; }
-.overlap-title { margin: 0; font: 600 21px "Fraunces", Georgia, serif; }
 .overlap fieldset, .td-pick fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 .overlap legend { padding: 0; margin-bottom: 8px; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
 .overlap .them legend { color: var(--partner); }
@@ -351,15 +348,10 @@ details p { color: var(--muted); line-height: 1.7; }
 .la-here:focus-visible { outline-color: #221c18; outline-offset: 3px; }
 
 /* The film now closes the page: the maker's story, after the couple's. */
-.story-note { display: grid; grid-template-columns: .9fr 1.1fr; gap: 64px; align-items: center; padding-block: 72px; border-top: 1px solid var(--line); }
-.story-note p:not(.eyebrow) { color: var(--muted); max-width: 30em; }
-.story-film video { box-shadow: 0 24px 64px #0003; border: 1px solid #ffffff24; }
-@media (max-width: 760px) { .story-note { grid-template-columns: 1fr; gap: 24px; padding-block: 48px; } .story-film { max-width: 500px; width: 100%; margin-inline: auto; } }
+@media (max-width: 760px) { .try { grid-template-columns: 1fr; gap: 20px; padding-block: 8px 48px; } }
 
 @media (max-width: 1000px) { .talk-demo { grid-template-columns: 1fr; } .lock { min-height: 220px; } }
 @media (max-width: 760px) {
- .home .hero { grid-template-areas: "copy" "demo" "cta"; gap: 22px 0; }
- .home .hero .lede { margin-bottom: 0; }
  .overlap { padding: 18px; gap: 16px; }
  .talk-figure { padding: 0; border: 0; background: none; }
 }
