@@ -225,7 +225,6 @@ details p { color: var(--muted); line-height: 1.7; }
  .feature-track::-webkit-scrollbar { display: none; }
  .feature-track > article { flex: 0 0 86%; scroll-snap-align: start; margin: 0; }
  .feature-track > .feature { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 22px; gap: 18px; }
- .feature-track > .feature > .product-still { margin-top: auto; }
  .feature-track .feature-copy h3 { font-size: 26px; }
  .feature-track .product-still { max-width: none; }
 }
@@ -363,7 +362,6 @@ details p { color: var(--muted); line-height: 1.7; }
  .home .hero .lede { margin-bottom: 0; }
  .overlap { padding: 18px; gap: 16px; }
  .talk-figure { padding: 0; border: 0; background: none; }
- .feature-track > .feature > .talk-figure { margin-top: auto; }
 }
 @media (max-width: 370px) { .seg span { font-size: 14px; } .bar { font-size: 10px; } .strip { grid-template-columns: 32px 1fr; } }
 @media (prefers-reduced-motion: no-preference) {
@@ -377,3 +375,19 @@ details p { color: var(--muted); line-height: 1.7; }
  .td-on > i { animation: glows .6s var(--spring) both; }
 }
 @media print { .overlap fieldset, .talk-demo .td-btn { display: none; } }
+
+/* Phones: each story card is as tall as its own content (the row no longer stretches to the tallest),
+   and the talk light demo is compact so it doesn't set the pace for the others. */
+@media (max-width: 760px) {
+ .feature-track { align-items: flex-start; }
+ .talk-demo { gap: 12px; }
+ .lock { min-height: 0; padding: 12px 10px 10px; border-radius: 18px; }
+ .lock-time { font-size: 40px; }
+ .lock-empty { padding: 10px 6px 4px; }
+ .td-pick legend { font-size: 18px; }
+ .lvl span { min-height: 46px; padding: 7px 10px; }
+ .lvl small { display: none; }
+ .lvl span { grid-template-columns: 14px 1fr; }
+ .td-on { padding-top: 0; gap: 10px; }
+ .td-on > i { width: 44px; height: 44px; }
+}
