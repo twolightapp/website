@@ -352,8 +352,10 @@ details p { color: var(--muted); line-height: 1.7; }
 .la-here:focus-visible { outline-color: #221c18; outline-offset: 3px; }
 
 /* The film now closes the page: the maker's story, after the couple's. */
-.closing-film { max-width: 520px; margin: 36px auto 10px; }
-.closing-film video { box-shadow: 0 24px 64px #0003; border: 1px solid #ffffff24; }
+.story-note { display: grid; grid-template-columns: .9fr 1.1fr; gap: 64px; align-items: center; padding-block: 72px; border-top: 1px solid var(--line); }
+.story-note p:not(.eyebrow) { color: var(--muted); max-width: 30em; }
+.story-film video { box-shadow: 0 24px 64px #0003; border: 1px solid #ffffff24; }
+@media (max-width: 760px) { .story-note { grid-template-columns: 1fr; gap: 24px; padding-block: 48px; } .story-film { max-width: 500px; width: 100%; margin-inline: auto; } }
 
 @media (max-width: 1000px) { .talk-demo { grid-template-columns: 1fr; } .lock { min-height: 220px; } }
 @media (max-width: 760px) {
