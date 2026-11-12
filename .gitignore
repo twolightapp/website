@@ -1,0 +1,3 @@
+# Claude Code saves "don't ask again" commands here, tokens included. Never publish it.
+.claude/settings.local.json
+.DS_Store
