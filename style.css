@@ -95,6 +95,8 @@ html { scroll-padding-top: 24px; }
 .button:hover { background: var(--button-hover, #8d3523); }
 .availability { color: var(--muted); font-size: 13px; margin: 18px 0 0; }
 .availability span { color: var(--partner); padding-right: 6px; font-size: 10px; }
+.availability a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.availability a:hover { color: var(--accent); }
 .film { margin: 0; }
 .hero-product { position: relative; isolation: isolate; }
 .hero-product::before { content: ""; position: absolute; inset: -5% -5% 10%; z-index: -1; border-radius: 50%; background: radial-gradient(ellipse, #e8a68128, transparent 70%); pointer-events: none; }
