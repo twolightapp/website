@@ -181,7 +181,8 @@
       line.textContent = 'It stays lit until you’ve talked or you turn it off.';
       show('on');
       live.textContent = 'Sam’s Lock Screen now shows: Dillan wants to talk. ' + label + '. With an I’m here button.';
-      off.focus();
+      /* On phones only one side shows at a time; move to whichever button is visible. */
+      (off.offsetParent ? off : el('.la-here')).focus();
     });
 
     el('.la-here').addEventListener('click', function () {
