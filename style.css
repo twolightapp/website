@@ -457,3 +457,25 @@ details p { color: var(--muted); line-height: 1.7; }
   }
  }
 }
+
+/* Small touches: press feedback, a quiet underline on nav links, and a smooth FAQ. */
+@media (prefers-reduced-motion: no-preference) {
+ .button, .td-btn, .la-here { transition: transform .15s ease, background-color .2s ease; }
+ .button:active, .td-btn:active, .la-here:active { transform: scale(.97); }
+ nav:not(.story-nav) a { position: relative; }
+ nav:not(.story-nav) a::after { content: ""; position: absolute; left: 0; right: 0; top: calc(50% + .8em); height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform .25s cubic-bezier(.22, 1, .36, 1); }
+ nav:not(.story-nav) a:hover::after, nav:not(.story-nav) a:focus-visible::after, nav a[aria-current]::after { transform: scaleX(1); }
+}
+.faq-list summary, .support-faq summary { list-style: none; display: flex; justify-content: space-between; gap: 16px; align-items: baseline; }
+.faq-list summary::-webkit-details-marker, .support-faq summary::-webkit-details-marker { display: none; }
+.faq-list summary::after, .support-faq summary::after { content: "+"; flex: none; color: var(--accent); font-size: 22px; line-height: 1; }
+@media (prefers-reduced-motion: no-preference) {
+ .faq-list summary::after, .support-faq summary::after { transition: transform .25s cubic-bezier(.22, 1, .36, 1); }
+ .faq-list details[open] > summary::after, .support-faq details[open] > summary::after { transform: rotate(45deg); }
+ @supports (interpolate-size: allow-keywords) {
+  details { interpolate-size: allow-keywords; }
+  details::details-content { block-size: 0; overflow: clip; transition: block-size .3s cubic-bezier(.22, 1, .36, 1), content-visibility .3s allow-discrete; }
+  details[open]::details-content { block-size: auto; }
+ }
+}
+@media (prefers-reduced-motion: reduce) { .faq-list details[open] > summary::after, .support-faq details[open] > summary::after { content: "–"; } }
