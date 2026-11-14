@@ -431,3 +431,14 @@ details p { color: var(--muted); line-height: 1.7; }
  ::view-transition-group(root) { animation-duration: .32s; }
  ::view-transition-old(root), ::view-transition-new(root) { animation-timing-function: cubic-bezier(.22, 1, .36, 1); }
 }
+
+/* Hero entrance: the headline and its lines arrive one after another, like a light coming on. */
+@media (prefers-reduced-motion: no-preference) {
+ @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+ .home .hero-copy > *, .not-found > * { animation: rise .7s cubic-bezier(.22, 1, .36, 1) backwards; }
+ .home .hero-copy > :nth-child(2), .not-found > :nth-child(2) { animation-delay: .06s; }
+ .home .hero-copy > :nth-child(3), .not-found > :nth-child(3) { animation-delay: .14s; }
+ .home .hero-copy > :nth-child(4), .not-found > :nth-child(4) { animation-delay: .22s; }
+ .home .hero-copy > :nth-child(5), .not-found > :nth-child(5) { animation-delay: .3s; }
+ .not-found > :nth-child(6) { animation-delay: .36s; }
+}
