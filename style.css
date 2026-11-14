@@ -479,3 +479,7 @@ details p { color: var(--muted); line-height: 1.7; }
  }
 }
 @media (prefers-reduced-motion: reduce) { .faq-list details[open] > summary::after, .support-faq details[open] > summary::after { content: "–"; } }
+
+/* A last bit of warm light under the closing line and the 404, echoing the hero. */
+.closing, .not-found { position: relative; isolation: isolate; }
+.closing::before, .not-found::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse 36% 62% at 34% 55%, #e8a68138, transparent), radial-gradient(ellipse 32% 56% at 68% 50%, #8abbb426, transparent); }
