@@ -422,3 +422,12 @@ details p { color: var(--muted); line-height: 1.7; }
  .feature-track .memory-list > div > span { color: var(--accent); }
  .feature-track .memory-list strong { color: var(--ink); }
 }
+
+/* Page-to-page transitions (cross-document view transitions). The header holds still while the page
+   fades. Browsers without support, and anyone with reduced motion on, just navigate as usual. */
+@media (prefers-reduced-motion: no-preference) {
+ @view-transition { navigation: auto; }
+ header { view-transition-name: site-header; }
+ ::view-transition-group(root) { animation-duration: .32s; }
+ ::view-transition-old(root), ::view-transition-new(root) { animation-timing-function: cubic-bezier(.22, 1, .36, 1); }
+}
