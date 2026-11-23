@@ -63,6 +63,10 @@ footer a { color: var(--muted); }
 footer .credit { flex-basis: 100%; margin: 4px 0 0; font-size: 12px; line-height: 1.5; color: var(--muted); }
 /* Wider screens: centered under the footer row, in a readable measure. Phones keep it left, like the stacked footer. */
 @media (min-width: 761px) { footer .credit, .home footer .credit { max-width: 760px; margin: 12px auto 0; text-align: center; } }
+/* Features coming in the next app version: a small asterisk and one note. Remove both once that version is out. */
+.soon { color: var(--accent); font-weight: 600; margin-left: 2px; }
+.soon-note { margin: 10px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
+.all-features .soon-note { padding: 0 24px 20px; margin: 0; }
 
 
 /* Website polish: shared readability and keyboard navigation. */
