@@ -945,20 +945,23 @@ details p { color: var(--muted); line-height: 1.7; }
 .day-more-list { list-style: none; margin: 0; padding: 0 16px 18px; display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; align-items: flex-start; }
 .day-more-list > .moment { flex: 0 0 84% !important; scroll-snap-align: start; }
 
-/* Bento order: calendar + heading home, talk + everyday, keep + private. */
-.b-lead  { grid-column: span 8; }
-.b-home  { grid-column: span 4; grid-template-columns: 1fr; }
-.b-talk  { grid-column: span 6; }
-.b-every { grid-column: span 6; }
-.b-keep  { grid-column: span 8; }
-.b-private { grid-column: span 4; }
+/* Bento order: calendar + heading home, talk + everyday, keep + private (desktop only; spans must not leak to phones). */
+.b-home { grid-template-columns: 1fr; }
+@media (min-width: 1024px) {
+  .b-lead  { grid-column: span 8; }
+  .b-home  { grid-column: span 4; }
+  .b-talk  { grid-column: span 6; }
+  .b-every { grid-column: span 6; }
+  .b-keep  { grid-column: span 8; }
+  .b-private { grid-column: span 4; }
+}
 .b-home .bento-shot.phone-crop { height: 260px; }
 .b-talk .bento-shot.phone-crop img { margin-top: -58%; }       /* show "Alex wants to talk" and I'm here */
 .bento-head { align-items: end; }
 .bento-cta { display: grid; justify-items: end; gap: 0; }
 .bento-cta .hero-free { margin-top: 10px; color: #cfc5bc; }
 .bento-more { display: none; }
-@media (max-width: 1023px) { .b-home { grid-column: span 1; } .b-every { grid-column: span 1; } }
+
 @media (max-width: 680px) {
   .bento-cta { justify-items: start; }
   .bento.collapsed .bento-card:nth-child(n+4) { display: none; }
@@ -1007,3 +1010,20 @@ details p { color: var(--muted); line-height: 1.7; }
 .founder-note figcaption img { border-radius: 9px; }
 .founder-note figcaption small { display: block; font-weight: 400; font-size: 13px; color: var(--muted); }
 @media (max-width: 680px) { .founder-note figure { padding: 24px 22px; } }
+
+/* Phones and tablets: the bento is one clean column (two on tablets), never wider than the screen. */
+@media (max-width: 1023px) {
+  .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bento-card { grid-column: span 1 !important; grid-template-columns: 1fr !important; min-width: 0; }
+  .b-lead, .b-keep { grid-column: 1 / -1 !important; }
+}
+@media (max-width: 680px) {
+  .bento { grid-template-columns: minmax(0, 1fr); }
+  .bento-card, .b-lead, .b-keep { grid-column: 1 / -1 !important; }
+}
+/* Hero text that sits over the sun gets a soft dark backing. */
+.mode-experience .hero .hero-free, .mode-experience .hero .hero-watch {
+  display: inline-block; padding: 6px 14px; border-radius: 12px; background: rgba(22, 18, 30, .6);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); text-shadow: none; }
+.mode-experience .hero .hero-watch { display: inline-flex; margin-top: 10px; }
+.mode-experience .hero-cta .hero-ghost { justify-content: center; }
