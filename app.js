@@ -359,10 +359,7 @@
       noise = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
       var d = noise.getChannelData(0);
       for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-      /* vinyl: soft hiss + sparse crackles, looping */
-      var vinyl = ctx.createBuffer(1, ctx.sampleRate * 4, ctx.sampleRate), v = vinyl.getChannelData(0);
-      for (var j = 0; j < v.length; j++) v[j] = (Math.random() * 2 - 1) * 0.012 + (Math.random() < 0.0006 ? (Math.random() - 0.5) * 0.5 : 0);
-      var vs = ctx.createBufferSource(); vs.buffer = vinyl; vs.loop = true; vs.connect(master); vs.start();
+      /* Clean mix: no vinyl hiss or crackle (Christian's pick). */
     }
     function note(n, t, len, vol, type) {
       var o = ctx.createOscillator(), g = ctx.createGain();
