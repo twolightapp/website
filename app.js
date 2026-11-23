@@ -304,11 +304,13 @@
     function size() { runway.style.height = (N * 85 + 60) + 'vh'; }
     size();
 
-    var raf = 0, lastIndex = -1;
+    var raf = 0, lastIndex = -1, lastP = -1;
     function frame() {
       raf = 0;
       var r = runway.getBoundingClientRect(), span = runway.offsetHeight - window.innerHeight;
       var p = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
+      if (p === lastP && lastIndex !== -1) return;   // outside the path, or no movement: skip the work
+      lastP = p;
       var t = p * (N - 1);
       var a = yaw(t);
       world.style.transform = 'rotateY(' + (-a * 0.55).toFixed(2) + 'deg) translate3d(' + (-px(t)).toFixed(1) + 'px, 0, ' + (-(pz(t) + BACK)).toFixed(1) + 'px)';
@@ -316,12 +318,15 @@
         var d = t - i, ad = Math.abs(d);
         var o = d > 0 ? Math.max(0, 1 - d * 3.2) : Math.max(0.1, 1 - ad * 0.5);
         m.style.opacity = o.toFixed(3);
-        m.style.filter = ad > 0.35 ? 'blur(' + Math.min(6, (ad - 0.35) * 4).toFixed(1) + 'px)' : 'none';
+        m.style.visibility = (o < 0.02 || ad > 2.6) ? 'hidden' : 'visible';   // far cards cost nothing
+        /* Only the stop you're on can be tabbed into; the stops bar moves between them. */
+        var active = ad < 0.5;
+        if (m.inert === active) m.inert = !active;
         /* Angled while you travel toward it; square to the camera when it's the stop you're on. */
         var focus = Math.max(0, 1 - ad * 2.5), yi = yaw(i);
         var turn = (-yi * 0.6) * (1 - focus) + (a * 0.55) * focus;
         m.style.transform = m.dataset.base + ' rotateY(' + turn.toFixed(2) + 'deg)' + (d > 0 ? ' translate3d(' + (d * 260 * (i % 2 ? -1 : 1)).toFixed(1) + 'px, ' + (-d * 90).toFixed(1) + 'px, 0)' : '');
-        m.style.pointerEvents = ad < 0.5 ? 'auto' : 'none';
+        m.style.pointerEvents = active ? 'auto' : 'none';
       });
       /* Sky: morning -> noon -> dusk -> night across the day. */
       var s = p * 3;
@@ -425,7 +430,7 @@
       '<div class="hs-phones"><div class="hs-phone mine"><img src="/media/day-morning.jpg" alt="" width="560" height="1217"><span class="who">You</span></div>' +
       '<div class="hs-link"></div><span class="hs-hug"></span>' +
       '<div class="hs-phone theirs"><img src="/media/day-countdowns-dark.jpg" alt="" width="560" height="1217"><span class="who">Alex</span></div>' +
-      '<div class="hs-toast">Alex got your hug.</div></div>';
+      '</div>';
     hero.insertBefore(scene, hero.firstChild);
     var road = scene.querySelector('.hs-road');
     function rx(d) { return Math.sin(d / 650) * 180; }
@@ -443,7 +448,10 @@
     var film = hero.querySelector('.film');
     if (meet) {
       var acts = document.createElement('div'); acts.className = 'hero-actions';
-      var start = document.createElement('a'); start.className = 'button'; start.href = '#day';
+      var store = document.createElement('a'); store.className = 'button'; store.href = 'https://apps.apple.com/app/id6831379597';
+      store.innerHTML = 'Download on the App Store <span aria-hidden="true">↗</span>';
+      acts.appendChild(store);
+      var start = document.createElement('a'); start.className = 'hero-ghost'; start.href = '#day';
       start.innerHTML = 'Start the day <span aria-hidden="true">↓</span>';
       acts.appendChild(start);
       if (film && window.HTMLDialogElement) {
@@ -464,17 +472,17 @@
       }
       meet.replaceWith(acts);
     }
-    var hugBtn = document.createElement('button'); hugBtn.type = 'button'; hugBtn.className = 'hero-ghost hs-hugbtn'; hugBtn.textContent = 'Send Alex a hug';
-    (copy || hero).appendChild(hugBtn);
-    var hug = scene.querySelector('.hs-hug'), toast = scene.querySelector('.hs-toast'), toastTimer = 0;
+    var hugBtn = document.createElement('button'); hugBtn.type = 'button'; hugBtn.className = 'hero-ghost hs-hugbtn'; hugBtn.textContent = 'Try sending a hug';
+    var hugStatus = document.createElement('p'); hugStatus.className = 'hs-status'; hugStatus.setAttribute('role', 'status');
+    (copy || hero).appendChild(hugBtn); (copy || hero).appendChild(hugStatus);
+    var hug = scene.querySelector('.hs-hug');
     function sendHug() {
-      hugBtn.textContent = 'Hug sent'; setTimeout(function () { hugBtn.textContent = 'Send Alex a hug'; }, 2600);
+      hugStatus.textContent = 'In the app, Alex would feel this one. (Just a demo here.)';
+      setTimeout(function () { hugStatus.textContent = ''; }, 3200);
+      if (still) return;
       hug.classList.remove('go'); void hug.offsetWidth; hug.classList.add('go');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(function () { toast.classList.add('show'); toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2200); }, still ? 0 : 1300);
     }
     hugBtn.addEventListener('click', sendHug);
-    if (!still) setTimeout(sendHug, 1800);
 
     /* Scroll: fly down the road; you and Alex walk toward each other; the phones lift away; the sun sinks. */
     var sun = scene.querySelector('.hs-sun'), phones = scene.querySelector('.hs-phones'), raf = 0;
@@ -488,7 +496,12 @@
       phones.style.transform = 'translateY(' + (-p * 260).toFixed(1) + 'px)';
       phones.style.opacity = Math.max(0, 1 - p * 1.6).toFixed(3);
     }
-    function frame() { raf = 0; var h = hero.offsetHeight || 1; place(Math.min(1, Math.max(0, window.scrollY / h))); }
+    var lastP = -1;
+    function frame() {
+      raf = 0; var h = hero.offsetHeight || 1, p = Math.min(1, Math.max(0, window.scrollY / h));
+      if (p === lastP) return;            // past the hero: nothing to redraw
+      lastP = p; place(p);
+    }
     place(0);
     if (!still) window.addEventListener('scroll', function () { if (!raf) raf = requestAnimationFrame(frame); }, { passive: true });
   }
@@ -511,7 +524,9 @@
       var b = document.createElement('button'); b.type = 'button'; b.className = 'music-btn';
       function label() { b.textContent = Lofi.on ? 'Music on' : 'Music off'; b.setAttribute('aria-pressed', Lofi.on ? 'true' : 'false'); }
       b.addEventListener('click', function () { if (Lofi.on) { Lofi.stop(); saveMusic('off'); } else { Lofi.start(); saveMusic('on'); } setTimeout(label, 0); });
-      label(); document.body.appendChild(b);
+      label();
+      var sw0 = document.querySelector('header nav .mode-switch');
+      if (sw0) sw0.insertAdjacentElement('afterend', b); else document.body.appendChild(b);
     }
 
     function moveExtras() {
@@ -605,8 +620,8 @@
             fnote.textContent = count < 3 ? 'A couple more.' : count + ' stems. Wrap it when it looks right.';
           });
         });
-        wrapBtn.addEventListener('click', function () { svg.classList.add('wrapped'); wrapBtn.disabled = true; sendBtn.disabled = false; fnote.textContent = 'Wrapped. Alex opens it on their phone.'; });
-        sendBtn.addEventListener('click', function () { svg.classList.add('sent'); sendBtn.disabled = true; fnote.textContent = 'On its way to Alex. One bouquet a week is free.'; });
+        wrapBtn.addEventListener('click', function () { svg.classList.add('wrapped'); wrapBtn.disabled = true; sendBtn.disabled = false; fnote.textContent = 'Wrapped. In the app, Alex unwraps it on their phone.'; });
+        sendBtn.addEventListener('click', function () { svg.classList.add('sent'); sendBtn.disabled = true; fnote.textContent = 'That’s how it goes in the app. One bouquet a week is free.'; });
       }
       /* Every day: add a countdown and watch it count. */
       var cd = document.getElementById('day-dates');
@@ -618,7 +633,8 @@
           '<div class="cd-tiles" aria-live="polite"></div>';
         cc.appendChild(c);
         var whenIn = c.querySelector('[name=when]'), soon = new Date(Date.now() + 12 * 864e5);
-        whenIn.value = soon.toISOString().slice(0, 10); whenIn.min = new Date().toISOString().slice(0, 10);
+        function localDay(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+        whenIn.value = localDay(soon); whenIn.min = localDay(new Date());
         c.addEventListener('submit', function (e) {
           e.preventDefault();
           var what = c.querySelector('[name=what]').value.trim() || 'Our trip';
@@ -694,14 +710,16 @@
       apply(m);
       var mb = document.querySelector('.music-btn'); if (mb) { mb.textContent = Lofi.on ? 'Music on' : 'Music off'; mb.setAttribute('aria-pressed', Lofi.on ? 'true' : 'false'); }
       window.scrollTo(0, 0);
+      var h1 = document.getElementById('hero-title');
+      if (h1) { h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: true }); }
     }
     Array.prototype.forEach.call(gate.querySelectorAll('.welcome-go'), function (b) {
       b.addEventListener('click', function () { choose(b.getAttribute('data-mode')); });
     });
     gate.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') choose('simple');
-      if (e.key === 'Tab') {        /* keep focus inside the two choices */
-        var bs = gate.querySelectorAll('.welcome-go'), a = bs[0], z = bs[bs.length - 1];
+      if (e.key === 'Tab') {        /* keep focus inside the choices and the music box */
+        var bs = gate.querySelectorAll('.welcome-go, #welcome-music'), a = bs[0], z = bs[bs.length - 1];
         if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); }
         else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
       }
