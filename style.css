@@ -45,18 +45,8 @@ p, ul { margin: 0 0 1em; }
 
 /* Home */
 .hero { padding: 48px 0 24px; text-align: center; }
-.hero img.icon { width: 104px; height: 104px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,.15); margin-bottom: 24px; }
 .hero .lede { margin: 0 auto 28px; }
-.pill { display: inline-block; padding: 12px 22px; border-radius: 999px; background: var(--ink); color: var(--bg);
-  font-weight: 600; text-decoration: none; }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 28px 0; }
-.card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 20px; }
-.card h3 { margin-top: 0; }
-.card p { margin: 0; color: var(--muted); font-size: 15.5px; }
-.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); margin-right: 8px; }
-.dot.p { background: var(--partner); }
 .price { display: flex; gap: 14px; flex-wrap: wrap; }
-.price .card { flex: 1 1 200px; }
 .price strong { font: 600 28px "Fraunces", Georgia, serif; display: block; }
 
 /* Legal pages */
@@ -505,8 +495,7 @@ details p { color: var(--muted); line-height: 1.7; }
   transform-style: preserve-3d; will-change: transform; }
 .phone { width: 100%; aspect-ratio: 560 / 1217; border-radius: 42px; padding: 9px; background: #1c1b1f;
   box-shadow: 0 1px 0 #ffffff22 inset, 0 30px 60px -18px #2a150c55, 0 12px 24px -12px #0006; transform-style: preserve-3d; }
-.phone img, .phone-pending { display: block; width: 100%; height: 100%; border-radius: 33px; object-fit: cover; }
-.phone-pending { background: linear-gradient(160deg, #f5efe7, #ead9c8); }
+.phone img { display: block; width: 100%; height: 100%; border-radius: 33px; object-fit: cover; }
 .moment .badge { margin-top: 4px; }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -541,7 +530,7 @@ details p { color: var(--muted); line-height: 1.7; }
  .moment::before { display: none; }
  .tilt { width: 200px; }
  .phone { border-radius: 34px; padding: 7px; }
- .phone img, .phone-pending { border-radius: 27px; }
+ .phone img { border-radius: 27px; }
  .moment-copy > p:not(.moment-time):not(.moment-problem) { font-size: 16px; }
  @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
@@ -559,7 +548,7 @@ details p { color: var(--muted); line-height: 1.7; }
 /* ---------- A day with Twolight, v2: a 3D path you travel along (desktop, motion allowed, JS on) ----------
    app.js adds .day-3d; without it (phones, Reduce Motion, no JS) the section stays the plain timeline above.
    The camera follows a curving road of path lights; each moment waits at its own bend. Sky goes
-   morning -> noon -> dusk -> night with the day. transform and opacity only (plus a small blur on far cards). */
+   morning -> noon -> dusk -> night with the day. transform and opacity only. */
 .day-3d { position: relative; max-width: none; padding: 0; }
 .day-3d .section-heading { max-width: 1140px; margin: 0 auto; padding: 80px 32px 0; }
 .day-3d .day-runway { position: relative; }
@@ -609,26 +598,7 @@ details p { color: var(--muted); line-height: 1.7; }
 .day:not(.day-3d) .day-sky, .day:not(.day-3d) .day-lights { display: none; }
 .home .day.day-3d { max-width: none; padding-inline: 0; }
 
-/* ---------- Welcome choice, header switch, music, playable stops ---------- */
-.welcome-open, .welcome-open body { overflow: hidden; }
-.welcome { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 24px;
-  background: radial-gradient(120% 90% at 50% 100%, #f0a07acc 0%, #a8526add 35%, #2b2140f2 75%, #15171cf7 100%); }
-.welcome-card { width: min(560px, 100%); text-align: center; color: #f5efe7; }
-.welcome-card img { border-radius: 16px; box-shadow: 0 16px 40px #0006; margin-bottom: 18px; }
-.welcome-card .eyebrow { color: #f0ac8c; }
-.welcome-card h2 { font-size: clamp(28px, 4vw, 40px); color: #f5efe7; margin: 0 0 26px; }
-.welcome-choices { display: grid; gap: 12px; }
-.welcome-go { display: grid; gap: 4px; text-align: left; padding: 18px 20px; border-radius: 16px; cursor: pointer;
-  background: #f5efe7; color: #28201b; border: 1px solid transparent; font: inherit; transition: transform .2s cubic-bezier(.22,1,.36,1); }
-.welcome-go strong { font: 600 19px "Fraunces", Georgia, serif; }
-.welcome-go span { font-size: 14.5px; color: #65594f; }
-.welcome-go.quiet { background: #ffffff14; color: #f5efe7; border-color: #ffffff33; }
-.welcome-go.quiet span { color: #d9cfc4; }
-.welcome-go:hover { transform: translateY(-2px); }
-.welcome-go:active { transform: scale(.98); }
-.welcome-music { display: inline-flex; align-items: center; gap: 10px; margin-top: 18px; font-size: 14.5px; color: #eee4da; cursor: pointer; min-height: 44px; }
-.welcome-music input { width: 20px; height: 20px; accent-color: #f0ac8c; }
-.welcome-note { font-size: 13px; color: #cbbfb3; margin: 8px 0 0; }
+/* ---------- Header switch, music, playable stops ---------- */
 .mode-switch { min-height: 44px; border: 0; background: none; color: var(--muted); font: inherit; font-size: 15px; cursor: pointer; padding: 0; }
 .mode-switch:hover { color: var(--ink); }
 .music-btn { min-height: 44px; padding: 0 14px; border-radius: 999px; margin-left: 4px; cursor: pointer;
@@ -705,17 +675,15 @@ details p { color: var(--muted); line-height: 1.7; }
    and two phones floating above with a hug travelling between them. Scrolling flies you down the road into the day. */
 .mode-experience body.home > header { position: absolute; left: 0; right: 0; top: 0; z-index: 6; border: 0; background: none; }
 .mode-experience body.home > header .brand, .mode-experience body.home > header nav a, .mode-experience body.home > header .mode-switch, .mode-experience body.home > header .music-btn { color: #f5efe7; }
-.mode-experience .hero { position: relative; max-width: none; min-height: 100vh; margin: 0; padding: 0; display: block; overflow: hidden; isolation: isolate;
-  background: linear-gradient(180deg, #1d1a2e 0%, #3a2a4c 34%, #8e4a62 58%, #e48a67 74%, #f5b98a 82%, #2a2238 82.2%, #15171c 100%); color: #f5efe7; }
+.mode-experience .hero { position: relative; max-width: none; min-height: 100vh; margin: 0; padding: 0; display: block; overflow: hidden; isolation: isolate; color: #f5efe7; }
 .mode-experience .hero .hero-product { display: none; }
-.mode-experience .hero-copy { position: relative; z-index: 3; max-width: 760px; margin: 0 auto; padding: 120px 24px 0; text-align: center; }
+.mode-experience .hero-copy { position: relative; z-index: 3; max-width: 760px; margin: 0 auto; padding: 92px 24px 0; text-align: center; }
 .mode-experience .hero .eyebrow { color: #f6c3a6; }
 .mode-experience .hero h1 { color: #f5efe7; font-size: clamp(44px, 6.2vw, 84px); text-shadow: 0 2px 30px #0005; }
 .mode-experience .hero h1 em { color: #f6b089; }
 .mode-experience .hero .lede { color: #eadfd4; margin-inline: auto; }
 .mode-experience .hero .button { background: #f5efe7; color: #28201b; }
 .mode-experience .hero .availability, .mode-experience .hero .availability a { color: #eadfd4; }
-.hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 .hero-ghost { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 20px; border-radius: 10px; cursor: pointer;
   border: 1px solid #ffffff55; background: #ffffff12; color: #f5efe7; font: 600 16px "DM Sans", sans-serif; text-decoration: none;
   backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
@@ -724,15 +692,6 @@ details p { color: var(--muted); line-height: 1.7; }
 .hs-stars { position: absolute; inset: 0 0 30% 0; background-image: radial-gradient(1.2px 1.2px at 12% 18%, #fff9 50%, transparent), radial-gradient(1px 1px at 28% 8%, #fff7 50%, transparent),
   radial-gradient(1.4px 1.4px at 47% 22%, #fffb 50%, transparent), radial-gradient(1px 1px at 66% 12%, #fff6 50%, transparent), radial-gradient(1.3px 1.3px at 81% 26%, #fff9 50%, transparent),
   radial-gradient(1px 1px at 91% 9%, #fff7 50%, transparent), radial-gradient(1px 1px at 6% 34%, #fff5 50%, transparent), radial-gradient(1.2px 1.2px at 58% 4%, #fff8 50%, transparent); }
-.hs-sun { position: absolute; left: 50%; top: 82%; width: 260px; height: 260px; margin: -130px 0 0 -130px; border-radius: 50%;
-  background: radial-gradient(circle, #ffe3b8 0%, #f8b27c 38%, #ee8a63aa 58%, transparent 72%); will-change: transform; }
-.hs-ground { position: absolute; left: 50%; top: 104%; width: 0; height: 0; transform-style: preserve-3d; }
-.hs-road { position: absolute; left: 0; top: 0; transform-style: preserve-3d; transform: rotateX(76deg); will-change: transform; }
-.hs-road b { position: absolute; width: 12px; height: 12px; margin: -6px; border-radius: 50%;
-  background: radial-gradient(circle, #fff0c8 0%, #e9b930 45%, transparent 72%); box-shadow: 0 0 18px 6px #e9b93055; }
-.hs-road .you, .hs-road .them { width: 22px; height: 22px; margin: -11px; }
-.hs-road .you { background: radial-gradient(circle, #ffe2d6 0%, #e8866b 45%, transparent 72%); box-shadow: 0 0 30px 10px #e8866b88; }
-.hs-road .them { background: radial-gradient(circle, #e0f4f1 0%, #6fb3b8 45%, transparent 72%); box-shadow: 0 0 30px 10px #6fb3b888; }
 .hs-phones { position: absolute; left: 50%; top: 70%; width: 0; height: 0; transform-style: preserve-3d; perspective: 1000px; z-index: 2; will-change: transform, opacity; }
 .hs-phone { position: absolute; width: 160px; aspect-ratio: 560 / 1217; padding: 6px; border-radius: 28px; background: #1c1b1f;
   box-shadow: 0 30px 60px -20px #000a, 0 0 0 1px #ffffff1a; top: -190px; }
@@ -747,10 +706,6 @@ details p { color: var(--muted); line-height: 1.7; }
 .hs-hug.go { animation: hs-hug 1.6s cubic-bezier(.45,0,.2,1) forwards; }
 @keyframes hs-hug { 0% { opacity: 0; transform: translateX(0) scale(.6); } 12% { opacity: 1; } 50% { transform: translateX(409px) translateY(-60px) scale(1.2); }
   88% { opacity: 1; } 100% { opacity: 0; transform: translateX(818px) scale(.7); } }
-.hs-toast { position: absolute; left: 405px; top: -250px; width: 190px; padding: 8px 10px; border-radius: 12px; background: #f5efe7; color: #28201b;
-  font: 600 12px/1.35 "DM Sans", sans-serif; box-shadow: 0 12px 30px -12px #0008; opacity: 0; transform: translateY(6px); transition: opacity .35s, transform .35s; }
-.hs-toast.show { opacity: 1; transform: none; }
-.hs-hugbtn { margin-top: 18px; }
 .film-dialog { border: 0; padding: 0; background: transparent; width: min(960px, 92vw); max-height: 92vh; overflow: visible; }
 .film-dialog[open] { display: flex; flex-direction: column; gap: 12px; }
 .film-dialog::backdrop { background: #0b0b10e6; }
@@ -762,13 +717,12 @@ details p { color: var(--muted); line-height: 1.7; }
 .film-dialog .close:hover { background: #fff; }
 @media (max-width: 1180px) {
   .hs-phone.mine { left: -470px; } .hs-phone.theirs { left: 310px; }
-  .hs-link { left: -310px; width: 620px; } .hs-hug { left: -310px; }  .hs-toast { left: 295px; }
+  .hs-link { left: -310px; width: 620px; } .hs-hug { left: -310px; }
 }
 @media (max-width: 899px) {
-  .mode-experience .hero-copy { padding-top: 100px; }
   .hs-phones { top: 84%; }
   .hs-phone { width: 104px; top: -120px; } .hs-phone.mine { left: -150px; } .hs-phone.theirs { left: 46px; }
-  .hs-link { left: -46px; width: 92px; top: -40px; } .hs-hug { left: -46px; top: -51px; } .hs-toast { display: none; }
+  .hs-link { left: -46px; width: 92px; top: -40px; } .hs-hug { left: -46px; top: -51px; }
   @keyframes hs-hug { 0% { opacity: 0; transform: translateX(0) scale(.6); } 12% { opacity: 1; } 50% { transform: translateX(35px) translateY(-20px) scale(1.1); } 88% { opacity: 1; } 100% { opacity: 0; transform: translateX(70px) scale(.7); } }
 }
 /* Simple mode: the same sky, still. */
@@ -776,14 +730,7 @@ details p { color: var(--muted); line-height: 1.7; }
 
 /* Review fixes (Nov 23) */
 .mode-experience .hero .availability { display: none; }
-.hs-status { min-height: 1.4em; margin: 10px 0 0; font-size: 14px; color: #eadfd4; }
-.hs-toast { display: none; }
-.welcome-music input { width: 18px; height: 18px; }
-.welcome-music input:focus-visible { outline: 2px solid #f6b089; outline-offset: 2px; }
-@media (prefers-reduced-motion: reduce) {
-  .welcome-go:hover, .welcome-go:active { transform: none; }
-  .hs-hug, .hs-hug.go { animation: none !important; opacity: 0 !important; }
-}
+@media (prefers-reduced-motion: reduce) { .hs-hug, .hs-hug.go { animation: none !important; opacity: 0 !important; } }
 @media (max-width: 899px) {
   .moment, .moment:nth-child(even) { min-width: 0; box-sizing: border-box; }
   .moment-play, .moment-play:nth-child(even) { flex-direction: column; }   /* heading first, then the thing to try */
@@ -792,8 +739,7 @@ details p { color: var(--muted); line-height: 1.7; }
 }
 .mode-experience .hero h1:focus { outline: none; }
 @media (max-width: 1180px) and (min-width: 900px) { .hs-phones { top: 90%; } .hs-phone { width: 130px; } }
-@media (max-width: 899px) { .hs-phones { display: none; } .mode-experience .hero { min-height: 92vh; } }
-@media (max-width: 899px) { .mode-experience .hero-copy { padding-top: 172px; } .music-btn { min-height: 36px; } }
+@media (max-width: 899px) { .hs-phones { display: none; } .music-btn { min-height: 36px; } }
 
 /* ---------- Experience: one dark palette, top to bottom (whatever the system appearance) ---------- */
 .mode-experience .home { --bg: #13121a; --card: #1f1d28; --ink: #f5efe7; --muted: #bdb3ab; --line: rgba(255,255,255,.1); --accent: #f0ac8c;
@@ -808,8 +754,6 @@ details p { color: var(--muted); line-height: 1.7; }
 .mode-experience .faq-list details, .mode-experience .all-features { background: rgba(31, 29, 40, .8); border-color: rgba(255,255,255,.1); }
 .mode-experience .closing, .mode-experience footer { border-color: rgba(255,255,255,.08); }
 .mode-experience .closing::before { opacity: .35; }
-/* The hero and the day path let the ribbons through at their edges. */
-.mode-experience .hero { background: linear-gradient(180deg, #1d1a2e 0%, #3a2a4c 34%, #8e4a62 58%, #e48a67 74%, #f5b98a 82%, #2a2238 82.2%, rgba(19,18,26,.6) 96%, rgba(19,18,26,0) 100%); }
 .day-3d .day-sky i { mix-blend-mode: normal; }
 .day-3d .day-sky { opacity: .78; }
 
@@ -832,12 +776,12 @@ details p { color: var(--muted); line-height: 1.7; }
 .bento-copy .eyebrow { margin-bottom: 12px; }
 .bento-copy .badge { display: inline-block; margin-top: 4px; }
 .bento-copy .text-link { display: inline-block; margin: 0 0 12px; color: #f6b089; }
-.b-lead  { grid-column: span 8; grid-template-columns: 1fr 1.1fr; align-items: center; }
-.b-every { grid-column: span 4; align-content: space-between; }
-.b-talk  { grid-column: span 6; grid-template-columns: 1.2fr .8fr; }
-.b-home  { grid-column: span 6; grid-template-columns: 1.2fr .8fr; }
-.b-keep  { grid-column: span 8; grid-template-columns: 1.3fr .7fr; }
-.b-private { grid-column: span 4; align-content: end;
+.b-lead  { grid-template-columns: 1fr 1.1fr; align-items: center; }
+.b-every { align-content: space-between; }
+.b-talk  { grid-template-columns: 1.2fr .8fr; }
+.b-home  { grid-template-columns: 1fr; }
+.b-keep  { grid-template-columns: 1.3fr .7fr; }
+.b-private { align-content: end;
   background: radial-gradient(120% 90% at 100% 0%, rgba(111,179,184,.22), transparent 60%), linear-gradient(160deg, rgba(44,38,56,.88), rgba(24,22,32,.9)); }
 .bento-shot { margin: 0; }
 .bento-shot.square img { width: 100%; height: auto; border-radius: 18px; display: block; }
@@ -850,16 +794,26 @@ details p { color: var(--muted); line-height: 1.7; }
 .bento-list li small { grid-column: 2; color: #a99f97; font-size: 12.5px; }
 .bento-list i { grid-row: span 2; width: 18px; height: 18px; margin-top: 3px; border-radius: 50%; border: 2px solid #8abbb4; }
 .bento-list li:first-child i { background: #8abbb4; box-shadow: inset 0 0 0 3px #1f1d28; }
+/* Desktop: calendar + heading home, talk + everyday, keep + private. Spans live only here, so they never leak to phones. */
+@media (min-width: 1024px) {
+  .b-lead  { grid-column: span 8; }
+  .b-home  { grid-column: span 4; }
+  .b-talk  { grid-column: span 6; }
+  .b-every { grid-column: span 6; }
+  .b-keep  { grid-column: span 8; }
+  .b-private { grid-column: span 4; }
+}
+/* Tablets: two columns. Phones: one. Never wider than the screen. */
 @media (max-width: 1023px) {
-  .bento { grid-template-columns: repeat(2, 1fr); }
-  .b-lead, .b-keep { grid-column: span 2; }
-  .b-every, .b-talk, .b-home, .b-private { grid-column: span 1; grid-template-columns: 1fr; }
+  .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bento-card { grid-template-columns: 1fr; min-width: 0; }
+  .b-lead, .b-keep { grid-column: 1 / -1; }
 }
 @media (max-width: 680px) {
   .mode-experience .bento-section { padding-block: 64px 48px; }
   .bento-head { flex-direction: column; align-items: start; }
-  .bento { grid-template-columns: 1fr; }
-  .bento-card, .b-lead, .b-keep { grid-column: auto; grid-template-columns: 1fr; padding: 22px; }
+  .bento { grid-template-columns: minmax(0, 1fr); }
+  .bento-card { padding: 22px; }
   .bento-shot.phone-crop { margin: 0 -22px -22px 0; height: 240px; }
 }
 @media (prefers-reduced-motion: reduce) { .bento-card { transition: none; } }
@@ -867,14 +821,13 @@ details p { color: var(--muted); line-height: 1.7; }
 /* ---------- Hero v2: a real sunset over the sea (Nov 23) ---------- */
 .mode-experience .hero { background: linear-gradient(180deg, #1b1830 0%, #33274a 26%, #6e3f63 48%, #c0606a 64%, #ef9466 74%, #f7c08a 80.5%, #f7c08a 81%, #2c1f36 81.05%, #13121a 100%); }
 .hs-skyclip { position: absolute; left: 0; right: 0; top: 0; height: 81%; overflow: hidden; }
-.hs-sun { left: 50%; top: auto; bottom: -86px; width: 200px; height: 200px; margin: 0 0 0 -100px; border-radius: 50%;
+.hs-sun { position: absolute; left: 50%; bottom: -86px; will-change: transform; width: 200px; height: 200px; margin: 0 0 0 -100px; border-radius: 50%;
   background: radial-gradient(circle at 50% 42%, #fff6d8 0%, #ffe2a2 38%, #ffb86e 78%, #ff9a5a 100%);
   box-shadow: 0 0 40px 10px #ffb47055, 0 0 120px 40px #ff8f5a33; }
 .hs-glow { position: absolute; left: 50%; bottom: -260px; width: 900px; height: 520px; margin-left: -450px; border-radius: 50%;
   background: radial-gradient(closest-side, #ffcf9a88, #ff9a6a33 45%, transparent 75%); }
 .hs-horizon { position: absolute; left: 0; right: 0; top: 81%; height: 1px; background: linear-gradient(90deg, transparent, #ffd7a8aa 30%, #fff0d0 50%, #ffd7a8aa 70%, transparent); }
 .hs-sea { position: absolute; left: 0; right: 0; top: 81%; bottom: 0; width: 100%; height: 19%; }
-.hs-ground { display: none; }
 .hs-phone .who { bottom: -40px; display: flex; align-items: center; justify-content: center; gap: 8px; left: 50%; right: auto; transform: translateX(-50%);
   padding: 6px 14px; border-radius: 999px; background: rgba(20, 18, 28, .78); border: 1px solid rgba(255,255,255,.16);
   font: 600 13px "DM Sans", sans-serif; letter-spacing: .08em; color: #f5efe7 !important; white-space: nowrap; }
@@ -894,7 +847,6 @@ details p { color: var(--muted); line-height: 1.7; }
 .mode-experience .hero .hero-free { color: #eadfd4; text-shadow: 0 1px 12px #0008; }
 .hero-watch { display: inline-flex; gap: 6px; margin-top: 10px; border: 0; background: none; font: 600 15px "DM Sans", sans-serif; cursor: pointer; color: #f6c3a6; padding: 10px 4px; min-height: 44px; }
 .mode-experience .hero .lede { max-width: 34em; margin-bottom: 20px; }
-.mode-experience .hero .hs-hugbtn, .mode-experience .hero .hs-status { display: none; }
 
 /* The picker, in the hero. */
 .hero-play { max-width: 540px; margin: 0 auto 22px; text-align: left; }
@@ -913,10 +865,7 @@ details p { color: var(--muted); line-height: 1.7; }
 .ov-more[open] summary::after { content: "–"; }
 .ov-more .strip { margin-top: 8px; }
 .ov-more .overlap-note { margin-top: 10px; color: #a99f97; }
-.mode-experience .hero { min-height: max(100vh, 920px); }
-.mode-experience .hero-copy { padding-top: 104px; }
 @media (max-width: 899px) {
-  .mode-experience .hero { min-height: 100vh; }
   .mode-experience .hero-copy { padding-top: 172px; padding-bottom: 150px; }
   .hero-play .overlap { padding: 14px; }
   .mode-experience .hero-cta { flex-direction: column; align-items: stretch; }
@@ -945,16 +894,6 @@ details p { color: var(--muted); line-height: 1.7; }
 .day-more-list { list-style: none; margin: 0; padding: 0 16px 18px; display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; align-items: flex-start; }
 .day-more-list > .moment { flex: 0 0 84% !important; scroll-snap-align: start; }
 
-/* Bento order: calendar + heading home, talk + everyday, keep + private (desktop only; spans must not leak to phones). */
-.b-home { grid-template-columns: 1fr; }
-@media (min-width: 1024px) {
-  .b-lead  { grid-column: span 8; }
-  .b-home  { grid-column: span 4; }
-  .b-talk  { grid-column: span 6; }
-  .b-every { grid-column: span 6; }
-  .b-keep  { grid-column: span 8; }
-  .b-private { grid-column: span 4; }
-}
 .b-home .bento-shot.phone-crop { height: 260px; }
 .b-talk .bento-shot.phone-crop img { margin-top: -58%; }       /* show "Alex wants to talk" and I'm here */
 .bento-head { align-items: end; }
@@ -983,7 +922,7 @@ details p { color: var(--muted); line-height: 1.7; }
   .mode-experience .hero h1 { font-size: clamp(44px, 5vw, 70px); margin-bottom: 14px; }
   .mode-experience .hero .eyebrow { margin-bottom: 14px; }
   .mode-experience .hero .lede { margin-bottom: 16px; }
-  .mode-experience .hero-copy { padding-top: 92px; max-width: 820px; }
+  .mode-experience .hero-copy { max-width: 820px; }
   .hero-play { max-width: 660px; margin-bottom: 18px; }
   .hero-play .overlap { grid-template-columns: 1fr 1fr; column-gap: 16px; }
   .hero-play .overlap > .answer, .hero-play .overlap > .ov-more { grid-column: 1 / -1; }
@@ -1011,19 +950,26 @@ details p { color: var(--muted); line-height: 1.7; }
 .founder-note figcaption small { display: block; font-weight: 400; font-size: 13px; color: var(--muted); }
 @media (max-width: 680px) { .founder-note figure { padding: 24px 22px; } }
 
-/* Phones and tablets: the bento is one clean column (two on tablets), never wider than the screen. */
-@media (max-width: 1023px) {
-  .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .bento-card { grid-column: span 1 !important; grid-template-columns: 1fr !important; min-width: 0; }
-  .b-lead, .b-keep { grid-column: 1 / -1 !important; }
-}
-@media (max-width: 680px) {
-  .bento { grid-template-columns: minmax(0, 1fr); }
-  .bento-card, .b-lead, .b-keep { grid-column: 1 / -1 !important; }
-}
 /* Hero text that sits over the sun gets a soft dark backing. */
 .mode-experience .hero .hero-free, .mode-experience .hero .hero-watch {
   display: inline-block; padding: 6px 14px; border-radius: 12px; background: rgba(22, 18, 30, .6);
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); text-shadow: none; }
 .mode-experience .hero .hero-watch { display: inline-flex; margin-top: 10px; }
 .mode-experience .hero-cta .hero-ghost { justify-content: center; }
+
+/* ---------- Second-pass review fixes (Nov 23) ---------- */
+/* Phones: a stop's copy and its playable bit never grow wider than their card (the countdown form spilled over Flowers). */
+@media (max-width: 899px) {
+  .day:not(.day-3d) .moment-copy, .day:not(.day-3d) .moment-shot { width: 100%; min-width: 0; }
+  .cd-play, .gift-play { grid-template-columns: minmax(0, 1fr); }
+  .cd-play input { width: 100%; min-width: 0; }
+}
+/* Desktop: while the first-visit bar is up, the stops bar sits above it instead of under it. */
+.day-3d .day-hud { transition: transform .4s cubic-bezier(.22, 1, .36, 1); }
+.has-welcome .day-3d .day-hud { transform: translateY(-72px); }
+@media (prefers-reduced-motion: reduce) { .day-3d .day-hud { transition: none; } }
+/* Desktop: the bouquet builder gets its own card, like the talk light, so the next stop doesn't show through it. */
+.day-3d .bouquet-play { padding: 24px; border-radius: 24px; background: var(--card); border: 1px solid rgba(255, 255, 255, .12);
+  box-shadow: 0 24px 60px -30px #0005; }
+/* Founder note: which part of the story is Plus. */
+.founder-plus { margin: 2px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted); }

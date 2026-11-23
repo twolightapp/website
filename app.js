@@ -92,7 +92,7 @@
     return off === 0 ? 'Tonight' : off === 1 ? 'Tomorrow' : WEEKDAYS[(weekday0 + off) % 7];
   }
 
-  /* Exposed for the site's own checks (tests/overlap.mjs); nothing else uses it. */
+  /* Exposed for quick checks from the browser console; nothing else uses it. */
   window.twolightOverlap = { workOut: workOut, dayName: dayName, clock: clock };
 
   function initOverlap() {
@@ -604,7 +604,10 @@
       bar.innerHTML = '<p>Want the full experience? It has motion.</p><div><button type="button" data-a="experience">Try it</button>' +
         '<button type="button" data-a="ok" class="primary">Keep it simple</button></div>';
     }
-    document.body.appendChild(bar);
+    /* Right after the header in the page order, so keyboard users meet it first (it still shows at the bottom). */
+    var main = document.getElementById('main');
+    if (main) document.body.insertBefore(bar, main); else document.body.appendChild(bar);
+    document.documentElement.classList.add('has-welcome');      // lifts the day path's stops bar clear of it
     bar.addEventListener('click', function (e) {
       var a = e.target.closest('button'); if (!a) return;
       var act = a.getAttribute('data-a');
@@ -612,6 +615,7 @@
       else if (act === 'ok') choose(mode, false);
       else choose(act, false);
       bar.remove();
+      document.documentElement.classList.remove('has-welcome');
     });
   }
 
@@ -767,11 +771,16 @@
     var MKEY = 'twolight.music';
     function saveMusic(v) { try { localStorage.setItem(MKEY, v); } catch (e) {} }
     function musicSaved() { try { return localStorage.getItem(MKEY) === 'on'; } catch (e) { return false; } }
+    /* A returning visitor who chose music: it's "on" but waits for their first tap or key (browsers need one to play sound). */
+    var musicPending = mode === 'experience' && musicSaved();
     function musicButton() {
       if (document.querySelector('.music-btn')) return;
       var b = document.createElement('button'); b.type = 'button'; b.className = 'music-btn';
-      function label() { b.textContent = Lofi.on ? 'Music on' : 'Music off'; b.setAttribute('aria-pressed', Lofi.on ? 'true' : 'false'); }
-      b.addEventListener('click', function () { if (Lofi.on) { Lofi.stop(); saveMusic('off'); } else { Lofi.start(); saveMusic('on'); } setTimeout(label, 0); });
+      function label() { var on = Lofi.on || musicPending; b.textContent = on ? 'Music on' : 'Music off'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+      b.addEventListener('click', function () {
+        if (Lofi.on || musicPending) { musicPending = false; Lofi.stop(); saveMusic('off'); } else { Lofi.start(); saveMusic('on'); }
+        setTimeout(label, 0);
+      });
       label();
       var sw0 = document.querySelector('header nav .mode-switch');
       if (sw0) sw0.insertAdjacentElement('afterend', b); else document.body.appendChild(b);
@@ -917,9 +926,16 @@
 
     if (mode === 'experience' || mode === 'simple') {
       apply(mode);
-      if (mode === 'experience' && musicSaved()) {
-        var once = function () { Lofi.start(); var mb = document.querySelector('.music-btn'); if (mb) { mb.textContent = 'Music on'; mb.setAttribute('aria-pressed', 'true'); } window.removeEventListener('pointerdown', once); window.removeEventListener('keydown', once); };
-        window.addEventListener('pointerdown', once); window.addEventListener('keydown', once);
+      if (musicPending) {
+        /* Start on the first click or key, not on pointerdown: iPhone Safari only unlocks sound on a full tap.
+           A first click on the Music button itself is left to the button (it reads "Music on", so a click turns it off). */
+        var once = function (e) {
+          window.removeEventListener('click', once, true); window.removeEventListener('keydown', once, true);
+          if (!musicPending) return;
+          if (e.target && e.target.closest && e.target.closest('.music-btn')) return;
+          musicPending = false; Lofi.start();
+        };
+        window.addEventListener('click', once, true); window.addEventListener('keydown', once, true);
       }
       return;
     }
