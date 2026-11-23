@@ -506,22 +506,64 @@
     if (!hero || hero.querySelector('.hero-scene')) return;
     var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var scene = document.createElement('div'); scene.className = 'hero-scene'; scene.setAttribute('aria-hidden', 'true');
-    scene.innerHTML = '<div class="hs-stars"></div><div class="hs-sun"></div><div class="hs-ground"><div class="hs-road"></div></div>' +
-      '<div class="hs-phones"><div class="hs-phone mine"><img src="/media/day-morning.jpg" alt="" width="560" height="1217"><span class="who">You</span></div>' +
+    scene.innerHTML = '<div class="hs-stars"></div><div class="hs-skyclip"><div class="hs-glow"></div><div class="hs-sun"></div></div>' +
+      '<canvas class="hs-sea"></canvas><div class="hs-horizon"></div>' +
+      '<div class="hs-phones"><div class="hs-phone mine"><img src="/media/day-morning.jpg" alt="" width="560" height="1217"><span class="who"><i></i>You</span></div>' +
       '<div class="hs-link"></div><span class="hs-hug"></span>' +
-      '<div class="hs-phone theirs"><img src="/media/day-countdowns-dark.jpg" alt="" width="560" height="1217"><span class="who">Alex</span></div>' +
+      '<div class="hs-phone theirs"><img src="/media/day-countdowns-dark.jpg" alt="" width="560" height="1217"><span class="who"><i></i>Alex</span></div>' +
       '</div>';
     hero.insertBefore(scene, hero.firstChild);
-    var road = scene.querySelector('.hs-road');
-    function rx(d) { return Math.sin(d / 650) * 180; }
-    for (var d = -200; d <= 4200; d += 110) {
-      var l = document.createElement('b');
-      l.style.transform = 'translate(' + (rx(d) - 70).toFixed(1) + 'px,' + (-d) + 'px)'; road.appendChild(l);
-      var r = document.createElement('b');
-      r.style.transform = 'translate(' + (rx(d) + 70).toFixed(1) + 'px,' + (-d) + 'px)'; road.appendChild(r);
+
+    /* The sea: perspective swells, the sun's glitter path, and two lights (you and Alex) on it. Half resolution. */
+    var sea = scene.querySelector('.hs-sea'), sg = sea.getContext('2d'), SW = 0, SH = 0, seaT = 0, seaP = 0, seaRaf = 0, seaLast = 0;
+    function seaSize() { SW = Math.round(sea.clientWidth * 0.5); SH = Math.round(sea.clientHeight * 0.5); sea.width = SW; sea.height = SH; }
+    function seaDraw() {
+      if (!SW || !SH) return;
+      var g = sg, cx = SW / 2, rows = 46;
+      g.clearRect(0, 0, SW, SH);
+      var water = g.createLinearGradient(0, 0, 0, SH);
+      water.addColorStop(0, '#3b2a45'); water.addColorStop(0.25, '#24192f'); water.addColorStop(0.75, '#16121d'); water.addColorStop(1, 'rgba(19,18,26,0)');
+      g.fillStyle = water; g.fillRect(0, 0, SW, SH);
+      g.globalCompositeOperation = 'lighter';
+      for (var j = 1; j <= rows; j++) {
+        var f = j / rows, y = SH * f * f * 0.95, thick = 0.6 + f * 2.2, drift = seaT * (8 + f * 30);
+        /* swells: long faint dashes across the whole sea */
+        g.fillStyle = 'rgba(255, 196, 160,' + (0.05 + 0.06 * (1 - f)).toFixed(3) + ')';
+        var dash = 18 + f * 110, gap = dash * 1.6, off = (drift + j * 37) % (dash + gap);
+        for (var x = -off; x < SW; x += dash + gap) g.fillRect(x, y, dash, thick * 0.6);
+        /* glitter path under the sun: short bright flecks that shimmer */
+        var half = 10 + f * SW * 0.16;
+        for (var k = 0; k < 4 + f * 6; k++) {
+          var seed = Math.sin(j * 12.9898 + k * 78.233) * 43758.5453, r = seed - Math.floor(seed);
+          var fx = cx + (r * 2 - 1) * half + Math.sin(seaT * 1.3 + j + k) * 3 * f;
+          var a = 0.25 + 0.55 * Math.max(0, Math.sin(seaT * 2.6 + j * 1.7 + k * 2.3));
+          g.fillStyle = 'rgba(255, 214, 160,' + (a * (1 - f * 0.8) * 0.85).toFixed(3) + ')';
+          g.fillRect(fx - (3 + f * 12) / 2, y, 3 + f * 12, thick * 0.7);
+        }
+      }
+      /* You and Alex: start apart, walk the glitter path toward each other, meet near the horizon. */
+      function light(x, y, rgb, rad) {
+        var gr = g.createRadialGradient(x, y, 0, x, y, rad * 2.6);
+        gr.addColorStop(0, 'rgba(' + rgb + ',0.95)'); gr.addColorStop(0.18, 'rgba(' + rgb + ',0.55)'); gr.addColorStop(1, 'rgba(' + rgb + ',0)');
+        g.fillStyle = gr; g.beginPath(); g.arc(x, y, rad * 2.6, 0, Math.PI * 2); g.fill();
+        var rf = g.createLinearGradient(0, y, 0, y + rad * 6); rf.addColorStop(0, 'rgba(' + rgb + ',0.4)'); rf.addColorStop(1, 'rgba(' + rgb + ',0)');
+        g.fillStyle = rf; g.fillRect(x - rad * 0.35, y + rad * 0.8, rad * 0.7, rad * 6);   // its reflection, fading
+      }
+      var meet = Math.min(1, seaP * 1.25), yy = SH * (0.62 - 0.36 * meet), spread = SW * 0.2 * (1 - meet) + 6;
+      light(cx - spread, yy + SH * 0.08 * (1 - meet), '240,150,120', 3 + (1 - meet) * 3);
+      light(cx + spread, yy, '130,200,200', 3 + (1 - meet) * 2.5);
+      g.globalCompositeOperation = 'source-over';
     }
-    var you = document.createElement('b'); you.className = 'you'; road.appendChild(you);
-    var them = document.createElement('b'); them.className = 'them'; road.appendChild(them);
+    function seaLoop(ts) {
+      seaRaf = requestAnimationFrame(seaLoop);
+      if (ts - seaLast < 40) return;
+      seaT += Math.min(0.1, (ts - seaLast) / 1000); seaLast = ts;
+      var r = hero.getBoundingClientRect(); if (r.bottom < 0) return;     // off screen: rest
+      seaDraw();
+    }
+    seaSize(); seaDraw();
+    window.addEventListener('resize', function () { seaSize(); seaDraw(); });
+    if (!still) seaRaf = requestAnimationFrame(seaLoop);
 
     /* Buttons: start the day, watch the story (the film moves into a dialog), send a hug. */
     var copy = hero.querySelector('.hero-copy'), meet = copy && copy.querySelector('.button');
@@ -567,12 +609,8 @@
     /* Scroll: fly down the road; you and Alex walk toward each other; the phones lift away; the sun sinks. */
     var sun = scene.querySelector('.hs-sun'), phones = scene.querySelector('.hs-phones'), raf = 0;
     function place(p) {
-      var dy = 900 + p * 1800, dt = 2600 - p * 1600;          // distance down the road for each light
-      if (dt < dy + 60) { dy = dt = (dy + dt) / 2; }
-      you.style.transform = 'translate(' + (rx(dy) - 14).toFixed(1) + 'px,' + (-dy) + 'px)';
-      them.style.transform = 'translate(' + (rx(dt) + 14).toFixed(1) + 'px,' + (-dt) + 'px)';
-      road.style.transform = 'rotateX(76deg) translateY(' + (p * 1400).toFixed(1) + 'px)';
-      sun.style.transform = 'translateY(' + (p * 90).toFixed(1) + 'px) scale(' + (1 - p * 0.15).toFixed(3) + ')';
+      seaP = p; if (still) seaDraw();
+      sun.style.transform = 'translateY(' + (p * 120).toFixed(1) + 'px)';
       phones.style.transform = 'translateY(' + (-p * 260).toFixed(1) + 'px)';
       phones.style.opacity = Math.max(0, 1 - p * 1.6).toFixed(3);
     }
