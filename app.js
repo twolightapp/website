@@ -210,4 +210,24 @@
   function start() { initOverlap(); initTalk(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
   else start();
+
+  /* ---------- A day with Twolight: phones lean toward the pointer (mouse and trackpad only) ---------- */
+  var canTilt = window.matchMedia('(hover: hover) and (pointer: fine)').matches &&
+    !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (canTilt) {
+    Array.prototype.forEach.call(document.querySelectorAll('.moment-shot'), function (shot) {
+      var tilt = shot.querySelector('.tilt');
+      if (!tilt) return;
+      shot.addEventListener('pointermove', function (e) {
+        var r = shot.getBoundingClientRect();
+        var x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+        tilt.style.setProperty('--tx', (x * 16).toFixed(2) + 'deg');
+        tilt.style.setProperty('--ty', (-y * 12).toFixed(2) + 'deg');
+      });
+      shot.addEventListener('pointerleave', function () {
+        tilt.style.setProperty('--tx', '0deg');
+        tilt.style.setProperty('--ty', '0deg');
+      });
+    });
+  }
 })();
