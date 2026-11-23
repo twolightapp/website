@@ -555,3 +555,49 @@ details p { color: var(--muted); line-height: 1.7; }
   }
  }
 }
+
+/* ---------- A day with Twolight, v2: a 3D path you travel along (desktop, motion allowed, JS on) ----------
+   app.js adds .day-3d; without it (phones, Reduce Motion, no JS) the section stays the plain timeline above.
+   The camera follows a curving road of path lights; each moment waits at its own bend. Sky goes
+   morning -> noon -> dusk -> night with the day. transform and opacity only (plus a small blur on far cards). */
+.day-3d { position: relative; max-width: none; padding: 0; }
+.day-3d .section-heading { max-width: 1140px; margin: 0 auto; padding: 80px 32px 0; }
+.day-3d .day-runway { position: relative; }
+.day-3d .day-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; perspective: 1100px; perspective-origin: 50% 42%; }
+.day-3d .day-sky { position: absolute; inset: 0; pointer-events: none; }
+.day-3d .day-sky i { position: absolute; inset: 0; opacity: 0; }
+.day-3d .sky-morning { background: radial-gradient(120% 80% at 70% 0%, #ffe2c4 0%, #f5efe7 55%, #f5efe7 100%); opacity: 1; }
+.day-3d .sky-noon { background: radial-gradient(120% 80% at 50% 0%, #fff6e8 0%, #f3ece2 60%); }
+.day-3d .sky-dusk { background: radial-gradient(120% 90% at 50% 100%, #f0a07a 0%, #a8526a 38%, #3a2a48 75%, #221d33 100%); }
+.day-3d .sky-night { background: radial-gradient(120% 90% at 50% 0%, #2b2f48 0%, #15171c 60%); }
+.day-3d .day-world { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; will-change: transform; }
+.day-3d .day-line { position: static; display: block; transform-style: preserve-3d; }
+.day-3d .day-line::before, .day-3d .day-line::after { display: none; }
+.day-3d .moment, .day-3d .moment:nth-child(even) { position: absolute; left: 0; top: 0; width: 820px; margin: -300px 0 0 -410px;
+  display: grid; grid-template-columns: 1fr 260px; gap: 48px; align-items: center; padding: 0;
+  transform-style: preserve-3d; will-change: transform, opacity, filter; animation: none; }
+.day-3d .moment:nth-child(even) .moment-copy { order: 0; }
+.day-3d .moment::before { display: none; }
+.day-3d .moment-copy { animation: none !important; padding: 28px 30px; border-radius: 24px;
+  background: color-mix(in srgb, var(--card) 82%, transparent); border: 1px solid var(--line);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 24px 60px -30px #0005; }
+.day-3d .moment .phone { animation: none !important; }
+.day-3d .moment-shot { perspective: none; }
+.day-3d .day-lights { position: absolute; left: 0; top: 0; transform-style: preserve-3d; }
+.day-3d .day-lights b { position: absolute; left: -7px; top: -7px; width: 14px; height: 14px; border-radius: 50%;
+  background: radial-gradient(circle, #ffe7b0 0%, #e9b930 40%, transparent 72%); box-shadow: 0 0 22px 6px #e9b93066; }
+.day-3d .day-hud { position: absolute; left: 32px; right: 32px; bottom: 28px; display: flex; align-items: end; justify-content: space-between;
+  pointer-events: none; }
+.day-3d .day-clock { font: 600 clamp(28px, 3.4vw, 44px)/1 "Fraunces", Georgia, serif; letter-spacing: -.02em; color: var(--ink);
+  transition: color .4s; }
+.day-3d.is-night .day-clock, .day-3d.is-night .day-stops button { color: #f5efe7; }
+.day-3d .day-stops { display: flex; gap: 6px; pointer-events: auto; }
+.day-3d .day-stops button { min-width: 44px; min-height: 44px; border: 0; background: none; color: var(--muted); cursor: pointer;
+  font: 600 11px/1 "DM Sans", sans-serif; letter-spacing: .1em; display: grid; place-items: center; gap: 6px; padding: 0 4px; }
+.day-3d .day-stops button::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: .4;
+  transition: transform .25s, opacity .25s; }
+.day-3d .day-stops button[aria-current="true"]::before { opacity: 1; transform: scale(1.5); background: var(--accent); }
+.day-3d .day-hint { position: absolute; top: 24px; left: 50%; transform: translateX(-50%); font-size: 12px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--muted); transition: opacity .4s; }
+.day:not(.day-3d) .day-sky, .day:not(.day-3d) .day-lights { display: none; }
+.home .day.day-3d { max-width: none; padding-inline: 0; }

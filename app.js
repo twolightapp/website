@@ -230,4 +230,94 @@
       });
     });
   }
+
+  /* ---------- A day with Twolight, v2: travel a 3D path (desktop only; phones keep the swipe cards) ---------- */
+  (function () {
+    var day = document.getElementById('day');
+    if (!day) return;
+    var wide = window.matchMedia('(min-width: 900px)');
+    var still = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (!wide.matches || still.matches) return;            // the plain timeline is already a good page
+    var runway = day.querySelector('.day-runway');
+    var stage = day.querySelector('.day-stage');
+    var world = day.querySelector('.day-world');
+    var lights = day.querySelector('.day-lights');
+    var moments = Array.prototype.slice.call(day.querySelectorAll('.moment'));
+    var sky = ['.sky-morning', '.sky-noon', '.sky-dusk', '.sky-night'].map(function (q) { return day.querySelector(q); });
+    if (!runway || !stage || !world || moments.length < 2) return;
+    day.classList.add('day-3d');
+
+    var N = moments.length, GAP = 1300, SWAY = 460, BACK = 430;
+    function px(t) { return Math.sin(t * 1.05) * SWAY; }      // the road winds left and right...
+    function pz(t) { return -t * GAP; }                        // ...and runs away from you
+    function yaw(t) { var dx = SWAY * 1.05 * Math.cos(t * 1.05); return Math.atan2(dx, GAP) * 180 / Math.PI; }
+
+    /* Path lights along the road, a little below the cards. */
+    for (var k = -4; k <= (N - 1) * 9 + 6; k++) {
+      var t = k / 9, b = document.createElement('b');
+      b.style.transform = 'translate3d(' + px(t).toFixed(1) + 'px, 330px, ' + pz(t).toFixed(1) + 'px) rotateX(90deg)';
+      lights.appendChild(b);
+    }
+    /* Each moment waits at its own bend, turned toward the road. */
+    moments.forEach(function (m, i) {
+      m.dataset.base = 'translate3d(' + px(i).toFixed(1) + 'px, 0, ' + pz(i).toFixed(1) + 'px) rotateY(' + (-yaw(i) * 0.6).toFixed(2) + 'deg)';
+    });
+
+    /* HUD: the time of day, and stops to jump to. */
+    var hud = document.createElement('div'); hud.className = 'day-hud';
+    var clock = document.createElement('p'); clock.className = 'day-clock'; clock.setAttribute('aria-hidden', 'true');
+    var stops = document.createElement('nav'); stops.className = 'day-stops'; stops.setAttribute('aria-label', 'Moments in the day');
+    moments.forEach(function (m, i) {
+      var time = (m.querySelector('.moment-time') || {}).textContent || String(i + 1);
+      var btn = document.createElement('button'); btn.type = 'button'; btn.textContent = time.replace(/ (AM|PM)$/, '');
+      btn.setAttribute('aria-label', 'Go to ' + time);
+      btn.addEventListener('click', function () {
+        var top = runway.getBoundingClientRect().top + window.scrollY;
+        var span = runway.offsetHeight - window.innerHeight;
+        window.scrollTo({ top: top + span * (i / (N - 1)), behavior: 'smooth' });
+      });
+      stops.appendChild(btn);
+    });
+    var hint = document.createElement('p'); hint.className = 'day-hint'; hint.textContent = 'Scroll to travel through the day';
+    hud.appendChild(clock); hud.appendChild(stops); stage.appendChild(hud); stage.appendChild(hint);
+
+    function size() { runway.style.height = (N * 85 + 60) + 'vh'; }
+    size();
+
+    var raf = 0, lastIndex = -1;
+    function frame() {
+      raf = 0;
+      var r = runway.getBoundingClientRect(), span = runway.offsetHeight - window.innerHeight;
+      var p = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
+      var t = p * (N - 1);
+      var a = yaw(t);
+      world.style.transform = 'rotateY(' + (-a * 0.55).toFixed(2) + 'deg) translate3d(' + (-px(t)).toFixed(1) + 'px, 0, ' + (-(pz(t) + BACK)).toFixed(1) + 'px)';
+      moments.forEach(function (m, i) {
+        var d = t - i, ad = Math.abs(d);
+        var o = d > 0 ? Math.max(0, 1 - d * 3.2) : Math.max(0.1, 1 - ad * 0.5);
+        m.style.opacity = o.toFixed(3);
+        m.style.filter = ad > 0.35 ? 'blur(' + Math.min(6, (ad - 0.35) * 4).toFixed(1) + 'px)' : 'none';
+        m.style.transform = m.dataset.base + (d > 0 ? ' translate3d(' + (d * 260 * (i % 2 ? -1 : 1)).toFixed(1) + 'px, ' + (-d * 90).toFixed(1) + 'px, 0)' : '');
+        m.style.pointerEvents = ad < 0.5 ? 'auto' : 'none';
+      });
+      /* Sky: morning -> noon -> dusk -> night across the day. */
+      var s = p * 3;
+      sky.forEach(function (el, i) { if (el) el.style.opacity = Math.max(0, 1 - Math.abs(s - i)).toFixed(3); });
+      if (sky[0]) sky[0].style.opacity = Math.max(+sky[0].style.opacity, s < 0 ? 1 : 0).toFixed(3);
+      day.classList.toggle('is-night', s > 1.6);
+      var idx = Math.round(t);
+      if (idx !== lastIndex) {
+        lastIndex = idx;
+        clock.textContent = (moments[idx].querySelector('.moment-time') || {}).textContent || '';
+        Array.prototype.forEach.call(stops.children, function (b, i) { b.setAttribute('aria-current', i === idx ? 'true' : 'false'); });
+      }
+      hint.style.opacity = p > 0.03 ? '0' : '1';
+    }
+    function ask() { if (!raf) raf = requestAnimationFrame(frame); }
+    window.addEventListener('scroll', ask, { passive: true });
+    window.addEventListener('resize', function () { size(); ask(); });
+    function leave() { if (!wide.matches || still.matches) window.location.reload(); }
+    if (wide.addEventListener) { wide.addEventListener('change', leave); still.addEventListener('change', leave); }
+    frame();
+  })();
 })();
