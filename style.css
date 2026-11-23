@@ -901,6 +901,12 @@ details p { color: var(--muted); line-height: 1.7; }
 .day-more summary span { font-weight: 400; font-size: 13px; color: var(--muted); }
 .day-more-list { list-style: none; margin: 0; padding: 0 16px 18px; display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; align-items: flex-start; }
 .day-more-list > .moment { flex: 0 0 84% !important; scroll-snap-align: start; }
+/* Every card in the row is the same height, with its screen docked at the bottom in one cropped window,
+   so the cards line up as you swipe. (Flowers keeps its bouquet builder whole.) */
+.day-more-list { align-items: stretch; }
+.day-more-list > .moment { overflow: hidden; }
+.day-more-list > .moment > .moment-shot { margin-top: auto; }
+.day-more-list > .moment > .moment-shot:not(.moment-widget) { height: 300px; margin-bottom: -24px; overflow: hidden; align-items: flex-start; }
 
 .b-home .bento-shot.phone-crop { height: 260px; }
 .b-talk .bento-shot.phone-crop img { margin-top: -58%; }       /* show "Alex wants to talk" and I'm here */
@@ -989,3 +995,15 @@ details p { color: var(--muted); line-height: 1.7; }
 .moment-copy .soon-note { margin-top: 10px; }
 .day-3d .moment-copy .soon-note { color: #d9cfc5; }
 .bento-soon { margin-top: 16px; }
+/* 3:30 PM stop: Alex's favorites and the usual popping up at the coffee shop. */
+.order-play { display: grid; gap: 8px; }
+.order-cap { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.order-cap small { font-weight: 400; letter-spacing: 0; text-transform: none; margin-left: 6px; }
+.order-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.order-list li { display: grid; gap: 1px; padding: 8px 12px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); transition: border-color .3s, background-color .3s; }
+.order-list b { font-size: 12px; font-weight: 600; color: var(--accent); }
+.order-list span { font-size: 14px; color: var(--ink); }
+.order-list li.lit { border-color: var(--glow, #e9b930); background: color-mix(in srgb, var(--glow, #e9b930) 10%, var(--card)); }
+.order-play .play-btn { margin-top: 4px; justify-self: start; }
+.day-3d .order-list li { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.12); }
+.day-3d .order-list span { color: #eadfd4; }
