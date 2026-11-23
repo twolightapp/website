@@ -442,6 +442,100 @@
         });
         copy.appendChild(btn); copy.appendChild(note);
       }
+      /* 12:15 PM: save a gift. Drag the product into your private gift ideas (or tap Save). */
+      var gift = document.getElementById('day-gift');
+      if (gift) {
+        var gc = gift.querySelector('.moment-copy');
+        var g = document.createElement('div'); g.className = 'play gift-play';
+        g.innerHTML = '<div class="gift-item" tabindex="0" role="button" aria-label="Wool scarf, $38. Drag to Gift ideas or press Enter to save">' +
+          '<i aria-hidden="true"></i><span><b>Wool scarf</b><small>shop.example · $38</small></span></div>' +
+          '<div class="gift-box" aria-hidden="true"><b>Gift ideas</b><small>Only you can see these</small></div>' +
+          '<p class="play-note" role="status"></p>';
+        gc.appendChild(g);
+        var item = g.querySelector('.gift-item'), box = g.querySelector('.gift-box'), gnote = g.querySelector('.play-note');
+        var saved = false, sx = 0, sy = 0, dragging = false;
+        function keep() {
+          if (saved) return; saved = true;
+          item.style.transform = ''; item.classList.add('saved'); box.classList.add('got');
+          box.querySelector('small').textContent = 'Wool scarf · $38 · saved';
+          gnote.textContent = 'Saved to your gift ideas. Alex never sees it.';
+        }
+        item.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); keep(); } });
+        item.addEventListener('pointerdown', function (e) { if (saved) return; dragging = true; sx = e.clientX; sy = e.clientY; item.setPointerCapture(e.pointerId); item.classList.add('lift'); });
+        item.addEventListener('pointermove', function (e) { if (!dragging) return; item.style.transform = 'translate(' + (e.clientX - sx) + 'px,' + (e.clientY - sy) + 'px) rotate(-3deg)'; });
+        item.addEventListener('pointerup', function (e) {
+          if (!dragging) return; dragging = false; item.classList.remove('lift');
+          var a = item.getBoundingClientRect(), b = box.getBoundingClientRect();
+          var hitBox = a.right > b.left && a.left < b.right && a.bottom > b.top && a.top < b.bottom;
+          var moved = Math.abs(e.clientX - sx) + Math.abs(e.clientY - sy);
+          if (hitBox || moved < 6) keep(); else item.style.transform = '';
+        });
+      }
+      /* Saturday: build a bouquet, wrap it, send it. Simple shapes, drawn here. */
+      var fl = document.getElementById('day-flowers');
+      if (fl) {
+        var fshot = fl.querySelector('.moment-shot');
+        var f = document.createElement('div'); f.className = 'moment-shot moment-widget play bouquet-play';
+        f.innerHTML = '<svg class="bq" viewBox="0 0 240 260" role="img" aria-label="Your bouquet"><g class="bq-stems"></g><g class="bq-heads"></g>' +
+          '<path class="bq-wrap" d="M62 150 L178 150 L136 250 L104 250 Z"/><path class="bq-ribbon" d="M106 214 L134 214 L132 224 L108 224 Z"/></svg>' +
+          '<div class="bq-pick" role="group" aria-label="Add flowers"><button type="button" data-f="rose">Rose</button><button type="button" data-f="tulip">Tulip</button>' +
+          '<button type="button" data-f="daisy">Daisy</button><button type="button" data-f="green">Greenery</button></div>' +
+          '<div class="bq-actions"><button type="button" class="play-btn bq-wrap-btn" disabled>Wrap it</button><button type="button" class="play-btn quiet bq-send" disabled>Send to Alex</button></div>' +
+          '<p class="play-note" role="status">Tap a few flowers.</p>';
+        if (fshot) fshot.replaceWith(f); else fl.appendChild(f);
+        fl.classList.add('moment-play');
+        var heads = f.querySelector('.bq-heads'), stems = f.querySelector('.bq-stems'), svg = f.querySelector('.bq');
+        var wrapBtn = f.querySelector('.bq-wrap-btn'), sendBtn = f.querySelector('.bq-send'), fnote = f.querySelector('.play-note');
+        var count = 0, NS = 'http://www.w3.org/2000/svg';
+        var SPOTS = [[120, 70], [92, 86], [148, 84], [106, 52], [136, 50], [78, 62], [162, 62], [120, 100], [96, 112], [146, 110], [120, 36], [70, 96]];
+        function el(n, at) { var e = document.createElementNS(NS, n); for (var k in at) e.setAttribute(k, at[k]); return e; }
+        function bloom(kind, x, y) {
+          var g = el('g', { 'class': 'bq-flower bq-' + kind, transform: 'translate(' + x + ' ' + y + ')' });
+          if (kind === 'rose') { g.appendChild(el('circle', { r: 15 })); g.appendChild(el('path', { d: 'M-8 -2 Q0 -12 8 -2 Q0 6 -8 -2Z', 'class': 'in' })); }
+          else if (kind === 'tulip') { g.appendChild(el('path', { d: 'M-12 6 Q-14 -14 -6 -10 L0 -16 L6 -10 Q14 -14 12 6 Q0 14 -12 6Z' })); }
+          else if (kind === 'daisy') { for (var a = 0; a < 8; a++) g.appendChild(el('ellipse', { rx: 4, ry: 11, transform: 'rotate(' + a * 45 + ') translate(0 -9)' })); g.appendChild(el('circle', { r: 5, 'class': 'in' })); }
+          else { g.appendChild(el('path', { d: 'M0 14 Q-14 -4 0 -18 Q14 -4 0 14Z' })); }
+          return g;
+        }
+        Array.prototype.forEach.call(f.querySelectorAll('.bq-pick button'), function (b) {
+          b.addEventListener('click', function () {
+            if (count >= SPOTS.length || svg.classList.contains('wrapped')) return;
+            var at = SPOTS[count++], kind = b.getAttribute('data-f');
+            stems.appendChild(el('path', { d: 'M' + at[0] + ' ' + at[1] + ' Q' + (at[0] + 120) / 2 + ' ' + (at[1] + 190) / 2 + ' 120 236' }));
+            heads.appendChild(bloom(kind, at[0], at[1]));
+            wrapBtn.disabled = count < 3;
+            fnote.textContent = count < 3 ? 'A couple more.' : count + ' stems. Wrap it when it looks right.';
+          });
+        });
+        wrapBtn.addEventListener('click', function () { svg.classList.add('wrapped'); wrapBtn.disabled = true; sendBtn.disabled = false; fnote.textContent = 'Wrapped. Alex opens it on their phone.'; });
+        sendBtn.addEventListener('click', function () { svg.classList.add('sent'); sendBtn.disabled = true; fnote.textContent = 'On its way to Alex. One bouquet a week is free.'; });
+      }
+      /* Every day: add a countdown and watch it count. */
+      var cd = document.getElementById('day-dates');
+      if (cd) {
+        var cc = cd.querySelector('.moment-copy');
+        var c = document.createElement('form'); c.className = 'play cd-play';
+        c.innerHTML = '<label>What are you counting down to?<input name="what" maxlength="24" placeholder="Our trip" required></label>' +
+          '<label>When?<input name="when" type="date" required></label><button class="play-btn" type="submit">Add countdown</button>' +
+          '<div class="cd-tiles" aria-live="polite"></div>';
+        cc.appendChild(c);
+        var whenIn = c.querySelector('[name=when]'), soon = new Date(Date.now() + 12 * 864e5);
+        whenIn.value = soon.toISOString().slice(0, 10); whenIn.min = new Date().toISOString().slice(0, 10);
+        c.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var what = c.querySelector('[name=what]').value.trim() || 'Our trip';
+          var d = new Date(whenIn.value + 'T00:00:00'), today = new Date(); today.setHours(0, 0, 0, 0);
+          var days = Math.max(0, Math.round((d - today) / 864e5));
+          var tiles = c.querySelector('.cd-tiles');
+          if (tiles.children.length >= 4) tiles.removeChild(tiles.firstChild);
+          var t = document.createElement('div'); t.className = 'cd-tile' + (days <= 14 ? ' soon' : '');
+          var nb = document.createElement('b'); nb.textContent = days;
+          var sm = document.createElement('small'); sm.textContent = days === 1 ? 'day' : 'days';
+          var nm = document.createElement('span'); nm.textContent = what;
+          var dt = document.createElement('em'); dt.textContent = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+          t.appendChild(nb); t.appendChild(sm); t.appendChild(nm); t.appendChild(dt); tiles.appendChild(t);
+        });
+      }
       /* 9:10 PM: the real talk light demo. */
       var talk = document.querySelector('.talk-figure');
       var talkStop = document.getElementById('day-talk');
