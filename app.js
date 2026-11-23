@@ -345,7 +345,7 @@
   }
 
   /* ---------- Twolight lofi: an original loop made live with Web Audio (no file, nothing licensed) ----------
-     Slow jazzy 7th chords, a soft bass, a lazy swung beat and a little vinyl crackle. Off unless chosen. */
+     Slow jazzy 7th chords, a soft bass, a lazy swung beat. Clean mix, no vinyl noise. Off unless chosen. */
   var Lofi = (function () {
     var ctx = null, master = null, timer = 0, next = 0, step = 0, on = false, noise = null;
     var BPM = 72, SPB = 60 / BPM / 2;           // eighth notes
