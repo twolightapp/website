@@ -451,10 +451,15 @@
       acts.appendChild(start);
       if (film && window.HTMLDialogElement) {
         var dlg = document.createElement('dialog'); dlg.className = 'film-dialog'; dlg.setAttribute('aria-label', 'The Twolight story');
-        var close = document.createElement('button'); close.type = 'button'; close.className = 'close'; close.textContent = 'Close';
+        var close = document.createElement('button'); close.type = 'button'; close.className = 'close'; close.innerHTML = 'Close <span aria-hidden="true">✕</span>'; close.setAttribute('aria-label', 'Close the film');
         dlg.appendChild(close); dlg.appendChild(film); document.body.appendChild(dlg);
         var vid = film.querySelector('video');
         close.addEventListener('click', function () { dlg.close(); });
+        /* Clicking the dark area around the film closes it too; Esc works natively. */
+        dlg.addEventListener('click', function (e) {
+          var r = dlg.getBoundingClientRect();
+          if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
+        });
         dlg.addEventListener('close', function () { if (vid) vid.pause(); });
         var watch = document.createElement('button'); watch.type = 'button'; watch.className = 'hero-ghost'; watch.textContent = 'Watch the story';
         watch.addEventListener('click', function () { dlg.showModal(); if (vid) { vid.muted = false; vid.play().catch(function () {}); } });

@@ -750,11 +750,15 @@ details p { color: var(--muted); line-height: 1.7; }
   font: 600 12px/1.35 "DM Sans", sans-serif; box-shadow: 0 12px 30px -12px #0008; opacity: 0; transform: translateY(6px); transition: opacity .35s, transform .35s; }
 .hs-toast.show { opacity: 1; transform: none; }
 .hs-hugbtn { margin-top: 18px; }
-.film-dialog { border: 0; padding: 0; background: transparent; width: min(960px, 92vw); }
-.film-dialog::backdrop { background: #0b0b10d9; }
-.film-dialog video { width: 100%; border-radius: 18px; display: block; }
-.film-dialog .close { position: absolute; right: -6px; top: -54px; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid #ffffff44;
-  background: #ffffff14; color: #f5efe7; font: 600 14px "DM Sans", sans-serif; cursor: pointer; }
+.film-dialog { border: 0; padding: 0; background: transparent; width: min(960px, 92vw); max-height: 92vh; overflow: visible; }
+.film-dialog[open] { display: flex; flex-direction: column; gap: 12px; }
+.film-dialog::backdrop { background: #0b0b10e6; }
+.film-dialog .film { margin: 0; }
+.film-dialog video { width: 100%; max-height: calc(92vh - 120px); border-radius: 18px; display: block; background: #000; }
+.film-dialog figcaption { color: #d9cfc5; font-size: 13px; margin-top: 8px; }
+.film-dialog .close { align-self: flex-end; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 999px;
+  border: 1px solid #ffffff55; background: #f5efe7; color: #28201b; font: 600 15px "DM Sans", sans-serif; cursor: pointer; }
+.film-dialog .close:hover { background: #fff; }
 @media (max-width: 1180px) {
   .hs-phone.mine { left: -470px; } .hs-phone.theirs { left: 310px; }
   .hs-link { left: -310px; width: 620px; } .hs-hug { left: -310px; }  .hs-toast { left: 295px; }
