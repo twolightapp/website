@@ -837,6 +837,24 @@
           if (hitBox || moved < 6) keep(); else item.style.transform = '';
         });
       }
+      /* 3:30 PM: two of Alex's favorites; "walk in" and their usual lights up, as it would on your screen (Plus). Compact, so the card keeps its height. */
+      var order = document.getElementById('day-order');
+      if (order) {
+        var oc = order.querySelector('.moment-copy');
+        var o = document.createElement('div'); o.className = 'play order-play';
+        o.innerHTML = '<p class="order-cap">Alex’s favorites <small>sample</small></p>' +
+          '<ul class="order-list">' +
+          '<li class="order-coffee"><b>Drinks &amp; coffee · Harbor Light</b><span>Oat milk latte, extra hot</span></li>' +
+          '<li><b>Flowers</b><span>Tulips, any color</span></li></ul>' +
+          '<button type="button" class="play-btn order-go">I’m at Harbor Light</button>';
+        oc.appendChild(o);
+        var go = o.querySelector('.order-go'), coffee = o.querySelector('.order-coffee');
+        coffee.setAttribute('aria-live', 'polite');
+        go.addEventListener('click', function () {
+          coffee.classList.add('lit'); coffee.querySelector('b').textContent = 'You’re at Harbor Light · Alex’s usual';
+          go.disabled = true; go.textContent = 'Pops up there · Plus';
+        });
+      }
       /* Saturday: build a bouquet, wrap it, send it. Simple shapes, drawn here. */
       var fl = document.getElementById('day-flowers');
       if (fl) {
