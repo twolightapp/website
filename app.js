@@ -232,7 +232,7 @@
   }
 
   /* ---------- A day with Twolight, v2: travel a 3D path (desktop only; phones keep the swipe cards) ---------- */
-  (function () {
+  function initDay3D() {
     var day = document.getElementById('day');
     if (!day) return;
     var wide = window.matchMedia('(min-width: 900px)');
@@ -319,5 +319,200 @@
     function leave() { if (!wide.matches || still.matches) window.location.reload(); }
     if (wide.addEventListener) { wide.addEventListener('change', leave); still.addEventListener('change', leave); }
     frame();
+  }
+
+  /* ---------- Twolight lofi: an original loop made live with Web Audio (no file, nothing licensed) ----------
+     Slow jazzy 7th chords, a soft bass, a lazy swung beat and a little vinyl crackle. Off unless chosen. */
+  var Lofi = (function () {
+    var ctx = null, master = null, timer = 0, next = 0, step = 0, on = false, noise = null;
+    var BPM = 72, SPB = 60 / BPM / 2;           // eighth notes
+    var CHORDS = [[53, 57, 60, 64], [52, 55, 59, 62], [50, 53, 57, 60], [48, 52, 55, 59]];   // Fmaj7 Em7 Dm7 Cmaj7
+    function hz(n) { return 440 * Math.pow(2, (n - 69) / 12); }
+    function build() {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      master = ctx.createGain(); master.gain.value = 0;
+      var tone = ctx.createBiquadFilter(); tone.type = 'lowpass'; tone.frequency.value = 1700; tone.Q.value = 0.4;
+      master.connect(tone); tone.connect(ctx.destination);
+      noise = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+      var d = noise.getChannelData(0);
+      for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      /* vinyl: soft hiss + sparse crackles, looping */
+      var vinyl = ctx.createBuffer(1, ctx.sampleRate * 4, ctx.sampleRate), v = vinyl.getChannelData(0);
+      for (var j = 0; j < v.length; j++) v[j] = (Math.random() * 2 - 1) * 0.012 + (Math.random() < 0.0006 ? (Math.random() - 0.5) * 0.5 : 0);
+      var vs = ctx.createBufferSource(); vs.buffer = vinyl; vs.loop = true; vs.connect(master); vs.start();
+    }
+    function note(n, t, len, vol, type) {
+      var o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = type || 'triangle'; o.frequency.value = hz(n); o.detune.value = (Math.random() - 0.5) * 12;
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + 0.08);
+      g.gain.exponentialRampToValueAtTime(0.0008, t + len);
+      o.connect(g); g.connect(master); o.start(t); o.stop(t + len + 0.05);
+    }
+    function hit(t, kind) {
+      if (kind === 'kick') {
+        var o = ctx.createOscillator(), g = ctx.createGain();
+        o.frequency.setValueAtTime(120, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.18);
+        g.gain.setValueAtTime(0.55, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+        o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.32); return;
+      }
+      var s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g2 = ctx.createGain();
+      s.buffer = noise; f.type = kind === 'snare' ? 'bandpass' : 'highpass'; f.frequency.value = kind === 'snare' ? 1800 : 7000;
+      var len = kind === 'snare' ? 0.18 : 0.05, vol = kind === 'snare' ? 0.18 : 0.05;
+      g2.gain.setValueAtTime(vol, t); g2.gain.exponentialRampToValueAtTime(0.001, t + len);
+      s.connect(f); f.connect(g2); g2.connect(master); s.start(t, Math.random()); s.stop(t + len + 0.02);
+    }
+    function tick() {
+      while (next < ctx.currentTime + 0.3) {
+        var t = next + (step % 2 ? SPB * 0.18 : 0);           // swing the off-beats
+        var bar = Math.floor(step / 8), chord = CHORDS[Math.floor(bar / 2) % CHORDS.length], s8 = step % 8;
+        if (s8 === 0 && bar % 2 === 0) chord.forEach(function (n, i) { note(n, t + i * 0.025, SPB * 15, 0.06, 'triangle'); });
+        if (s8 === 0 || s8 === 5) note(chord[0] - 12, t, SPB * 3, 0.16, 'sine');
+        if (s8 === 0 || s8 === 3 && bar % 2) hit(t, 'kick');
+        if (s8 === 4) hit(t, 'snare');
+        hit(t, 'hat');
+        if (s8 === 6 && Math.random() < 0.5) note(chord[(Math.random() * 4) | 0] + 12, t, SPB * 2, 0.03, 'sine');
+        next += SPB; step++;
+      }
+    }
+    function start() {
+      if (!ctx) build();
+      ctx.resume(); on = true;
+      next = Math.max(next, ctx.currentTime + 0.05);
+      master.gain.cancelScheduledValues(ctx.currentTime);
+      master.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 1.5);
+      if (!timer) timer = setInterval(tick, 100);
+    }
+    function stop() {
+      if (!ctx) return; on = false;
+      master.gain.cancelScheduledValues(ctx.currentTime);
+      master.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.6);
+      setTimeout(function () { if (!on) { clearInterval(timer); timer = 0; ctx.suspend(); } }, 700);
+    }
+    document.addEventListener('visibilitychange', function () {
+      if (!ctx || !on) return;
+      if (document.hidden) ctx.suspend(); else ctx.resume();
+    });
+    return { start: start, stop: stop, get on() { return on; } };
+  })();
+
+  /* ---------- Two ways to see Twolight: the experience (3D path + things to try) or simple ----------
+     Chosen on the first visit, remembered on this device only (localStorage, nothing is sent anywhere),
+     switchable from the header. Simple is the page as it always was. */
+  (function () {
+    var day = document.getElementById('day');
+    if (!day) return;
+    var KEY = 'twolight.mode';
+    function saved() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+    function save(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
+    var mode = saved();
+    var MKEY = 'twolight.music';
+    function saveMusic(v) { try { localStorage.setItem(MKEY, v); } catch (e) {} }
+    function musicSaved() { try { return localStorage.getItem(MKEY) === 'on'; } catch (e) { return false; } }
+    function musicButton() {
+      if (document.querySelector('.music-btn')) return;
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'music-btn';
+      function label() { b.textContent = Lofi.on ? 'Music on' : 'Music off'; b.setAttribute('aria-pressed', Lofi.on ? 'true' : 'false'); }
+      b.addEventListener('click', function () { if (Lofi.on) { Lofi.stop(); saveMusic('off'); } else { Lofi.start(); saveMusic('on'); } setTimeout(label, 0); });
+      label(); document.body.appendChild(b);
+    }
+
+    function moveExtras() {
+      var line = day.querySelector('.day-line');
+      /* Try it: your shifts and theirs, first stop on the path. */
+      var overlap = document.getElementById('overlap');
+      if (overlap && line) {
+        var li = document.createElement('li');
+        li.className = 'moment moment-play'; li.id = 'day-try';
+        li.innerHTML = '<div class="moment-copy"><p class="moment-time"><span>Try it</span></p><p class="moment-problem">Different shifts, and no idea when you’re both free.</p><h3>Find your next evening.</h3><p>Pick your hours and your partner’s. This is the same math the app uses, sleep included.</p><span class="badge">Free</span></div>';
+        var play = document.createElement('div'); play.className = 'moment-shot moment-widget';
+        play.appendChild(overlap); li.appendChild(play);
+        line.insertBefore(li, line.firstChild);
+      }
+      /* 6:40 AM: send a hug. */
+      var morning = document.getElementById('day-morning');
+      if (morning) {
+        var copy = morning.querySelector('.moment-copy');
+        var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'play-btn'; btn.textContent = 'Send a hug';
+        var note = document.createElement('p'); note.className = 'play-note'; note.setAttribute('role', 'status');
+        btn.addEventListener('click', function () {
+          var heart = document.createElement('span'); heart.className = 'hug-fly'; heart.setAttribute('aria-hidden', 'true');
+          morning.appendChild(heart);
+          heart.addEventListener('animationend', function () { heart.remove(); });
+          note.textContent = 'Hug sent to Alex. It waits until they’re up.';
+        });
+        copy.appendChild(btn); copy.appendChild(note);
+      }
+      /* 9:10 PM: the real talk light demo. */
+      var talk = document.querySelector('.talk-figure');
+      var talkStop = document.getElementById('day-talk');
+      if (talk && talkStop) {
+        var shot = talkStop.querySelector('.moment-shot');
+        var holder = document.createElement('div'); holder.className = 'moment-shot moment-widget';
+        holder.appendChild(talk);
+        if (shot) shot.replaceWith(holder); else talkStop.appendChild(holder);
+        talkStop.classList.add('moment-play');
+      }
+    }
+
+    function apply(m) {
+      document.documentElement.classList.toggle('mode-experience', m === 'experience');
+      document.documentElement.classList.toggle('mode-simple', m !== 'experience');
+      if (m === 'experience') { moveExtras(); initDay3D(); musicButton(); }
+    }
+
+    /* Header switch. */
+    var nav = document.querySelector('header nav');
+    if (nav) {
+      var sw = document.createElement('button'); sw.type = 'button'; sw.className = 'mode-switch';
+      sw.textContent = mode === 'experience' ? 'Simple view' : 'The experience';
+      sw.addEventListener('click', function () { save(mode === 'experience' ? 'simple' : 'experience'); window.location.reload(); });
+      nav.appendChild(sw);
+    }
+
+    if (mode === 'experience' || mode === 'simple') {
+      apply(mode);
+      if (mode === 'experience' && musicSaved()) {
+        var once = function () { Lofi.start(); var mb = document.querySelector('.music-btn'); if (mb) { mb.textContent = 'Music on'; mb.setAttribute('aria-pressed', 'true'); } window.removeEventListener('pointerdown', once); window.removeEventListener('keydown', once); };
+        window.addEventListener('pointerdown', once); window.addEventListener('keydown', once);
+      }
+      return;
+    }
+
+    /* First visit: ask. Simple is underneath already, so nothing is hidden behind the choice. */
+    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var gate = document.createElement('div'); gate.className = 'welcome'; gate.setAttribute('role', 'dialog');
+    gate.setAttribute('aria-modal', 'true'); gate.setAttribute('aria-labelledby', 'welcome-title');
+    gate.innerHTML = '<div class="welcome-card"><img src="/icon.png" width="64" height="64" alt=""><p class="eyebrow">WELCOME TO TWOLIGHT</p>' +
+      '<h2 id="welcome-title">How would you like to look around?</h2>' +
+      '<div class="welcome-choices"><button type="button" class="welcome-go" data-mode="experience"><strong>Load the experience</strong><span>Travel through a day together and try things as you go.' + (still ? ' Has motion.' : '') + '</span></button>' +
+      '<button type="button" class="welcome-go quiet" data-mode="simple"><strong>Keep it simple</strong><span>A calm page that’s quick to read.</span></button></div>' +
+      '<label class="welcome-music"><input type="checkbox" id="welcome-music"> <span>Play soft lofi music while I look around</span></label>' +
+      '<p class="welcome-note">You can switch any time at the top of the page.</p></div>';
+    document.body.appendChild(gate);
+    document.documentElement.classList.add('welcome-open');
+    var first = gate.querySelector(still ? '[data-mode="simple"]' : '[data-mode="experience"]');
+    if (first) first.focus();
+    function choose(m) {
+      save(m); mode = m;
+      var wants = gate.querySelector('#welcome-music');
+      if (m === 'experience' && wants && wants.checked) { saveMusic('on'); Lofi.start(); } else saveMusic('off');
+      document.documentElement.classList.remove('welcome-open'); gate.remove();
+      var label = nav && nav.querySelector('.mode-switch');
+      if (label) label.textContent = m === 'experience' ? 'Simple view' : 'The experience';
+      apply(m);
+      var mb = document.querySelector('.music-btn'); if (mb) { mb.textContent = Lofi.on ? 'Music on' : 'Music off'; mb.setAttribute('aria-pressed', Lofi.on ? 'true' : 'false'); }
+      if (m === 'experience') day.scrollIntoView({ behavior: still ? 'auto' : 'smooth' });
+    }
+    Array.prototype.forEach.call(gate.querySelectorAll('.welcome-go'), function (b) {
+      b.addEventListener('click', function () { choose(b.getAttribute('data-mode')); });
+    });
+    gate.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') choose('simple');
+      if (e.key === 'Tab') {        /* keep focus inside the two choices */
+        var bs = gate.querySelectorAll('.welcome-go'), a = bs[0], z = bs[bs.length - 1];
+        if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); }
+        else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
+      }
+    });
   })();
 })();
