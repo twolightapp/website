@@ -883,3 +883,116 @@ details p { color: var(--muted); line-height: 1.7; }
 .hs-phone.theirs .who i { background: #82c8c8; box-shadow: 0 0 10px #82c8c8; }
 .mode-experience .hero .hero-ghost { background: rgba(22, 18, 30, .5); border-color: rgba(255,255,255,.3); }
 .mode-experience .hero .hero-ghost:hover { background: rgba(22, 18, 30, .68); }
+
+/* ---------- Pass 47 (Nov 23): playable hero, free line, welcome bar, beats, bento, share hug, FAQ ---------- */
+/* Both modes: Download leads, with the free line beside it. */
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.button.quiet { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.button.quiet:hover { background: color-mix(in srgb, var(--ink) 6%, transparent); }
+.hero-free { margin: 12px 0 0; font-size: 14px; color: var(--muted); }
+.mode-experience .hero-cta { justify-content: center; }
+.mode-experience .hero .hero-free { color: #eadfd4; text-shadow: 0 1px 12px #0008; }
+.hero-watch { display: inline-flex; gap: 6px; margin-top: 10px; border: 0; background: none; font: 600 15px "DM Sans", sans-serif; cursor: pointer; color: #f6c3a6; padding: 10px 4px; min-height: 44px; }
+.mode-experience .hero .lede { max-width: 34em; margin-bottom: 20px; }
+.mode-experience .hero .hs-hugbtn, .mode-experience .hero .hs-status { display: none; }
+
+/* The picker, in the hero. */
+.hero-play { max-width: 540px; margin: 0 auto 22px; text-align: left; }
+.hero-play-q { margin: 0 0 10px; text-align: center; font: 600 15px "DM Sans", sans-serif; letter-spacing: .06em; color: #f6c3a6; }
+.hero-play .overlap { --bg: rgba(255,255,255,.06); --line: rgba(255,255,255,.14); --button-bg: #e8866b; --button-ink: #221c18; --partner: #8abbb4; --partner-ink: #13121a; --glow: #e9b930;
+  padding: 18px; gap: 14px; background: rgba(22, 18, 30, .72); border-color: rgba(255,255,255,.14); color: #f5efe7;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 30px 70px -30px #000c; }
+.hero-play .overlap legend { color: #f6b089; } .hero-play .overlap .them legend { color: #9fd3cf; }
+.hero-play .seg span { min-height: 44px; font-size: 15px; }
+.hero-play .answer { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.12); transition: box-shadow .5s, border-color .5s; }
+.hero-play .answer small, .hero-play .answer span { color: #cfc5bc; }
+.hero-play .answer.lit { border-color: rgba(233,185,48,.6); box-shadow: 0 0 0 4px rgba(233,185,48,.12), 0 0 40px -6px rgba(233,185,48,.45); }
+.ov-more summary { cursor: pointer; font-size: 13.5px; color: #cfc5bc; list-style: none; min-height: 32px; display: flex; align-items: center; gap: 6px; }
+.ov-more summary::-webkit-details-marker { display: none; }
+.ov-more summary::after { content: "+"; color: #f6b089; font-size: 17px; }
+.ov-more[open] summary::after { content: "–"; }
+.ov-more .strip { margin-top: 8px; }
+.ov-more .overlap-note { margin-top: 10px; color: #a99f97; }
+.mode-experience .hero { min-height: max(100vh, 920px); }
+.mode-experience .hero-copy { padding-top: 104px; }
+@media (max-width: 899px) {
+  .mode-experience .hero { min-height: 100vh; }
+  .mode-experience .hero-copy { padding-top: 172px; padding-bottom: 150px; }
+  .hero-play .overlap { padding: 14px; }
+  .mode-experience .hero-cta { flex-direction: column; align-items: stretch; }
+}
+
+/* Welcome bar: small, at the bottom, never in the way. */
+.welcome-bar { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 40; width: min(640px, calc(100% - 24px));
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 10px 10px 18px; border-radius: 18px;
+  background: rgba(22, 18, 30, .92); border: 1px solid rgba(255,255,255,.14); color: #f5efe7; box-shadow: 0 20px 50px -20px #000c;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); font-size: 14.5px; }
+.welcome-bar p { margin: 0; }
+.welcome-bar div { display: flex; gap: 6px; flex-wrap: wrap; }
+.welcome-bar button { min-height: 40px; padding: 0 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,.18); background: transparent; color: #f5efe7; font: 600 14px "DM Sans", sans-serif; cursor: pointer; }
+.welcome-bar button.primary { background: #f5efe7; color: #28201b; border-color: #f5efe7; }
+.mode-simple .welcome-bar { background: var(--card); color: var(--ink); border-color: var(--line); }
+.mode-simple .welcome-bar button { color: var(--ink); border-color: var(--line); }
+.mode-simple .welcome-bar button.primary { background: var(--button-bg); color: var(--button-ink); border-color: transparent; }
+
+/* Phones: three beats down the page, then More. */
+.day-beats .day-line { display: grid !important; gap: 18px; overflow: visible !important; margin-inline: 0 !important; padding: 8px 0 0 !important; }
+.day-beats .day-line > .moment { flex: none !important; }
+.day-more { margin-top: 22px; border: 1px solid rgba(255,255,255,.12); border-radius: 22px; background: rgba(31,29,40,.7); }
+.day-more summary { cursor: pointer; list-style: none; padding: 16px 20px; min-height: 52px; font-weight: 600; display: flex; flex-direction: column; }
+.day-more summary::-webkit-details-marker { display: none; }
+.day-more summary span { font-weight: 400; font-size: 13px; color: var(--muted); }
+.day-more-list { list-style: none; margin: 0; padding: 0 16px 18px; display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; align-items: flex-start; }
+.day-more-list > .moment { flex: 0 0 84% !important; scroll-snap-align: start; }
+
+/* Bento order: calendar + heading home, talk + everyday, keep + private. */
+.b-lead  { grid-column: span 8; }
+.b-home  { grid-column: span 4; grid-template-columns: 1fr; }
+.b-talk  { grid-column: span 6; }
+.b-every { grid-column: span 6; }
+.b-keep  { grid-column: span 8; }
+.b-private { grid-column: span 4; }
+.b-home .bento-shot.phone-crop { height: 260px; }
+.b-talk .bento-shot.phone-crop img { margin-top: -58%; }       /* show "Alex wants to talk" and I'm here */
+.bento-head { align-items: end; }
+.bento-cta { display: grid; justify-items: end; gap: 0; }
+.bento-cta .hero-free { margin-top: 10px; color: #cfc5bc; }
+.bento-more { display: none; }
+@media (max-width: 1023px) { .b-home { grid-column: span 1; } .b-every { grid-column: span 1; } }
+@media (max-width: 680px) {
+  .bento-cta { justify-items: start; }
+  .bento.collapsed .bento-card:nth-child(n+4) { display: none; }
+  .bento-more { display: block; width: 100%; min-height: 52px; border-radius: 18px; border: 1px solid rgba(255,255,255,.14); background: rgba(31,29,40,.7);
+    color: #f5efe7; font: 600 15px "DM Sans", sans-serif; cursor: pointer; }
+}
+
+/* Closing: share a hug. */
+.share-hug { margin-top: 14px; display: grid; justify-items: center; gap: 6px; }
+.share-status { margin: 0; min-height: 1.3em; font-size: 14px; color: #cfc5bc; word-break: break-word; }
+
+/* FAQ: one rounded card. */
+.faq-list { border-radius: 22px; overflow: hidden; border: 1px solid var(--line); }
+.faq-list details { border-radius: 0; }
+.faq-list details > summary { padding-inline: 22px; }
+.faq-list details > p { padding-inline: 22px; }
+@media (prefers-reduced-motion: reduce) { .hero-play .answer { transition: none; } }
+@media (min-width: 900px) {
+  .mode-experience .hero h1 { font-size: clamp(44px, 5vw, 70px); margin-bottom: 14px; }
+  .mode-experience .hero .eyebrow { margin-bottom: 14px; }
+  .mode-experience .hero .lede { margin-bottom: 16px; }
+  .mode-experience .hero-copy { padding-top: 92px; max-width: 820px; }
+  .hero-play { max-width: 660px; margin-bottom: 18px; }
+  .hero-play .overlap { grid-template-columns: 1fr 1fr; column-gap: 16px; }
+  .hero-play .overlap > .answer, .hero-play .overlap > .ov-more { grid-column: 1 / -1; }
+  .hero-play .seg span { min-height: 40px; font-size: 14.5px; }
+  .mode-experience .hero { min-height: max(100vh, 860px); }
+}
+.ov-more { border: 0 !important; padding: 0 !important; margin: 0 !important; background: none !important; }
+.day-beats .moment, .day-more-list > .moment { flex-direction: column !important; }   /* the situation first, then the screen */
+@media (max-width: 680px) {
+  .welcome-bar { bottom: 10px; padding: 8px; gap: 8px; flex-wrap: nowrap; }
+  .welcome-bar p { display: none; }
+  .welcome-bar div { width: 100%; flex-wrap: nowrap; }
+  .welcome-bar button { flex: 1; min-height: 44px; padding: 0 8px; font-size: 13.5px; }
+}
+.hero-cta .button { gap: 14px; padding-inline: 18px; }

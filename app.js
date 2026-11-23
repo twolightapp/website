@@ -131,7 +131,10 @@
 
       var answer = el('.answer');                      /* restart the little glow */
       answer.classList.remove('lit'); void answer.offsetWidth; answer.classList.add('lit');
+      if (rendered) root.dispatchEvent(new CustomEvent('ovresult', { detail: { found: !!result.next } }));
+      rendered = true;
     }
+    var rendered = false;
 
     root.addEventListener('change', render);
     root.addEventListener('submit', function (e) { e.preventDefault(); });
@@ -269,8 +272,10 @@
     var stops = document.createElement('nav'); stops.className = 'day-stops'; stops.setAttribute('aria-label', 'Moments in the day');
     moments.forEach(function (m, i) {
       var time = (m.querySelector('.moment-time') || {}).textContent || String(i + 1);
-      var btn = document.createElement('button'); btn.type = 'button'; btn.textContent = time.replace(/ (AM|PM)$/, '');
-      btn.setAttribute('aria-label', 'Go to ' + time);
+      var NAMES = { 'day-morning': 'Before work', 'day-gift': 'Gift idea', 'day-order': 'Their order', 'day-late': 'Running late',
+        'day-talk': 'Talk', 'day-flowers': 'Flowers', 'day-dates': 'Countdowns' };
+      var btn = document.createElement('button'); btn.type = 'button'; btn.textContent = NAMES[m.id] || time.replace(/ (AM|PM)$/, '');
+      btn.setAttribute('aria-label', 'Go to ' + time + ': ' + btn.textContent);
       btn.addEventListener('click', function () { goTo(i); });
       stops.appendChild(btn);
     });
@@ -341,6 +346,7 @@
       day.classList.toggle('is-night', s > 1.6);
       var idx = Math.round(t);
       if (idx !== lastIndex) {
+        if (lastIndex !== -1) Lofi.swoosh();
         lastIndex = idx;
         clock.textContent = (moments[idx].querySelector('.moment-time') || {}).textContent || '';
         Array.prototype.forEach.call(stops.children, function (b, i) { b.setAttribute('aria-current', i === idx ? 'true' : 'false'); });
@@ -423,7 +429,23 @@
       if (!ctx || !on) return;
       if (document.hidden) ctx.suspend(); else ctx.resume();
     });
-    return { start: start, stop: stop, get on() { return on; } };
+    /* Little sounds, only while the music is on (the visitor chose sound). Very quiet. */
+    var lastSwoosh = 0;
+    function swoosh() {
+      if (!on || !ctx) return;
+      var t = ctx.currentTime; if (t - lastSwoosh < 0.35) return; lastSwoosh = t;
+      var s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+      s.buffer = noise; f.type = 'bandpass'; f.Q.value = 0.9;
+      f.frequency.setValueAtTime(500, t); f.frequency.exponentialRampToValueAtTime(2400, t + 0.22);
+      g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.05, t + 0.07); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.32);
+      s.connect(f); f.connect(g); g.connect(master); s.start(t, Math.random()); s.stop(t + 0.36);
+    }
+    function chime() {
+      if (!on || !ctx) return;
+      var t = ctx.currentTime + 0.02;
+      note(76, t, 1.4, 0.05, 'sine'); note(81, t + 0.16, 1.8, 0.05, 'sine');      // two notes that resolve
+    }
+    return { start: start, stop: stop, swoosh: swoosh, chime: chime, get on() { return on; } };
   })();
 
   var dayGoTo = null, dayProgress = null;
@@ -497,7 +519,86 @@
       var a = e.target.closest && e.target.closest('a[href^="#day-"]');
       if (a && dayGoTo && dayGoTo(a.getAttribute('href').slice(1))) e.preventDefault();
     });
-    Array.prototype.forEach.call(document.querySelectorAll('a[href="#together"]'), function (a) { a.setAttribute('href', '#features'); });
+    Array.prototype.forEach.call(document.querySelectorAll('a[href="#together"], a[href="/#together"]'), function (a) { a.setAttribute('href', '#features'); });
+  }
+
+
+  /* ---------- Phones (experience): three beats down the page, the rest under "More you can do" ---------- */
+  function initDayMobile() {
+    var day = document.getElementById('day');
+    if (!day || day.classList.contains('day-3d')) return;
+    var line = day.querySelector('.day-line'); if (!line) return;
+    day.classList.add('day-beats');
+    var keep = ['day-morning', 'day-late', 'day-talk'];
+    var more = document.createElement('details'); more.className = 'day-more';
+    more.innerHTML = '<summary>More you can do <span>gifts, their order, flowers, countdowns</span></summary>';
+    var list = document.createElement('ol'); list.className = 'day-more-list'; more.appendChild(list);
+    Array.prototype.slice.call(line.children).forEach(function (li) { if (keep.indexOf(li.id) < 0) list.appendChild(li); });
+    line.insertAdjacentElement('afterend', more);
+    more.addEventListener('toggle', function () { if (more.open) Lofi.swoosh(); });
+    var lastSnap = -1;
+    list.addEventListener('scroll', function () {
+      var i = Math.round(list.scrollLeft / Math.max(1, list.clientWidth * 0.84));
+      if (i !== lastSnap) { if (lastSnap !== -1) Lofi.swoosh(); lastSnap = i; }
+    }, { passive: true });
+  }
+
+  /* ---------- Bento on phones: the three strongest cards, then "More" ---------- */
+  function initBentoMore() {
+    var bento = document.querySelector('.bento'); if (!bento || bento.querySelector('.bento-more')) return;
+    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'bento-more';
+    btn.setAttribute('aria-expanded', 'false'); btn.textContent = 'More you can do';
+    bento.classList.add('collapsed'); bento.appendChild(btn);
+    btn.addEventListener('click', function () {
+      var open = bento.classList.toggle('collapsed') === false;
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false'); btn.textContent = open ? 'Show less' : 'More you can do';
+      Lofi.swoosh();
+    });
+  }
+
+  /* ---------- Closing: share a hug with your partner (native share sheet, or copy) ---------- */
+  function initShareHug() {
+    var closing = document.querySelector('.closing'); if (!closing || closing.querySelector('.share-hug')) return;
+    var STORE = 'https://apps.apple.com/app/id6831379597';
+    var TEXT = 'Thinking of you between shifts. Want to try Twolight with me?';
+    var wrap = document.createElement('div'); wrap.className = 'share-hug';
+    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'hero-ghost';
+    btn.innerHTML = 'Share a hug with your partner';
+    var status = document.createElement('p'); status.className = 'share-status'; status.setAttribute('role', 'status');
+    wrap.appendChild(btn); wrap.appendChild(status); closing.appendChild(wrap);
+    btn.addEventListener('click', function () {
+      Lofi.chime();
+      if (navigator.share) {
+        navigator.share({ text: TEXT, url: STORE }).catch(function () {});   // leaving the sheet is fine; no success claim
+        return;
+      }
+      var all = TEXT + ' ' + STORE;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(all).then(function () { status.textContent = 'Message and link copied. Paste it to them.'; },
+          function () { status.textContent = all; });
+      } else status.textContent = all;
+    });
+  }
+
+  /* ---------- First visit: show the page, then ask lightly (a small bar, not a wall) ---------- */
+  function welcomeBar(mode, choose) {
+    var bar = document.createElement('div'); bar.className = 'welcome-bar'; bar.setAttribute('role', 'region'); bar.setAttribute('aria-label', 'How to look around');
+    if (mode === 'experience') {
+      bar.innerHTML = '<p>You’re in the full experience.</p><div><button type="button" data-a="simple">Keep it simple</button>' +
+        '<button type="button" data-a="music">Play music</button><button type="button" data-a="ok" class="primary">Looks good</button></div>';
+    } else {
+      bar.innerHTML = '<p>Want the full experience? It has motion.</p><div><button type="button" data-a="experience">Try it</button>' +
+        '<button type="button" data-a="ok" class="primary">Keep it simple</button></div>';
+    }
+    document.body.appendChild(bar);
+    bar.addEventListener('click', function (e) {
+      var a = e.target.closest('button'); if (!a) return;
+      var act = a.getAttribute('data-a');
+      if (act === 'music') { Lofi.start(); choose('experience', true); }
+      else if (act === 'ok') choose(mode, false);
+      else choose(act, false);
+      bar.remove();
+    });
   }
 
   /* ---------- Hero, experience mode: twilight horizon, the road at your feet, two phones and a hug ---------- */
@@ -508,14 +609,15 @@
     var scene = document.createElement('div'); scene.className = 'hero-scene'; scene.setAttribute('aria-hidden', 'true');
     scene.innerHTML = '<div class="hs-stars"></div><div class="hs-skyclip"><div class="hs-glow"></div><div class="hs-sun"></div></div>' +
       '<canvas class="hs-sea"></canvas><div class="hs-horizon"></div>' +
-      '<div class="hs-phones"><div class="hs-phone mine"><img src="/media/day-morning.jpg" alt="" width="560" height="1217"><span class="who"><i></i>You</span></div>' +
+      '<div class="hs-phones"><div class="hs-phone mine"><img src="/media/day-order.jpg" alt="" width="560" height="1217"><span class="who"><i></i>You</span></div>' +
       '<div class="hs-link"></div><span class="hs-hug"></span>' +
       '<div class="hs-phone theirs"><img src="/media/day-countdowns-dark.jpg" alt="" width="560" height="1217"><span class="who"><i></i>Alex</span></div>' +
       '</div>';
     hero.insertBefore(scene, hero.firstChild);
 
     /* The sea: perspective swells, the sun's glitter path, and two lights (you and Alex) on it. Half resolution. */
-    var sea = scene.querySelector('.hs-sea'), sg = sea.getContext('2d'), SW = 0, SH = 0, seaT = 0, seaP = 0, seaRaf = 0, seaLast = 0;
+    function seaMeetUntil() { return typeof meetUntil === 'number' ? meetUntil : 0; }
+    var sea = scene.querySelector('.hs-sea'), sg = sea.getContext('2d'), SW = 0, SH = 0, seaT = 0, seaP = 0, seaRaf = 0, seaLast = 0, seaMeet = 0;
     function seaSize() { SW = Math.round(sea.clientWidth * 0.5); SH = Math.round(sea.clientHeight * 0.5); sea.width = SW; sea.height = SH; }
     function seaDraw() {
       if (!SW || !SH) return;
@@ -549,7 +651,9 @@
         var rf = g.createLinearGradient(0, y, 0, y + rad * 6); rf.addColorStop(0, 'rgba(' + rgb + ',0.4)'); rf.addColorStop(1, 'rgba(' + rgb + ',0)');
         g.fillStyle = rf; g.fillRect(x - rad * 0.35, y + rad * 0.8, rad * 0.7, rad * 6);   // its reflection, fading
       }
-      var meet = Math.min(1, seaP * 1.25), yy = SH * (0.62 - 0.36 * meet), spread = SW * 0.2 * (1 - meet) + 6;
+      var target = Math.max(Math.min(1, seaP * 1.25), performance.now() < seaMeetUntil() ? 1 : 0);
+      seaMeet += (target - seaMeet) * (still ? 1 : 0.12);
+      var meet = seaMeet, yy = SH * (0.62 - 0.36 * meet), spread = SW * 0.2 * (1 - meet) + 6;
       light(cx - spread, yy + SH * 0.08 * (1 - meet), '240,150,120', 3 + (1 - meet) * 3);
       light(cx + spread, yy, '130,200,200', 3 + (1 - meet) * 2.5);
       g.globalCompositeOperation = 'source-over';
@@ -565,17 +669,26 @@
     window.addEventListener('resize', function () { seaSize(); seaDraw(); });
     if (!still) seaRaf = requestAnimationFrame(seaLoop);
 
-    /* Buttons: start the day, watch the story (the film moves into a dialog), send a hug. */
-    var copy = hero.querySelector('.hero-copy'), meet = copy && copy.querySelector('.button');
-    var film = hero.querySelector('.film');
-    if (meet) {
-      var acts = document.createElement('div'); acts.className = 'hero-actions';
-      var store = document.createElement('a'); store.className = 'button'; store.href = 'https://apps.apple.com/app/id6831379597';
-      store.innerHTML = 'Download on the App Store <span aria-hidden="true">↗</span>';
-      acts.appendChild(store);
-      var start = document.createElement('a'); start.className = 'hero-ghost'; start.href = '#day';
-      start.innerHTML = 'Start the day <span aria-hidden="true">↓</span>';
-      acts.appendChild(start);
+    /* The picker in the hero: your shifts and theirs, answer right under the buttons. The sample week folds away. */
+    var copy = hero.querySelector('.hero-copy'), film = hero.querySelector('.film');
+    var overlap = document.getElementById('overlap');
+    if (overlap && copy) {
+      var play = document.createElement('div'); play.className = 'hero-play';
+      var q = document.createElement('p'); q.className = 'hero-play-q'; q.id = 'hero-play-q'; q.textContent = 'When are you both free?';
+      play.appendChild(q); overlap.setAttribute('aria-labelledby', 'hero-play-q');
+      var answer = overlap.querySelector('.answer'), strip = overlap.querySelector('.strip'), note = overlap.querySelector('.overlap-note');
+      if (answer) overlap.insertBefore(answer, strip);
+      var more = document.createElement('details'); more.className = 'ov-more';
+      more.innerHTML = '<summary>See the sample week</summary>';
+      if (strip) more.appendChild(strip); if (note) more.appendChild(note);
+      overlap.appendChild(more);
+      play.appendChild(overlap);
+      copy.insertBefore(play, copy.querySelector('.hero-cta'));
+    }
+    var cta = copy && copy.querySelector('.hero-cta');
+    if (cta) {
+      var quiet = cta.querySelector('.quiet');
+      if (quiet) { quiet.className = 'hero-ghost'; quiet.href = '#day'; quiet.innerHTML = 'Start the day <span aria-hidden="true">↓</span>'; }
       if (film && window.HTMLDialogElement) {
         var dlg = document.createElement('dialog'); dlg.className = 'film-dialog'; dlg.setAttribute('aria-label', 'The Twolight story');
         var close = document.createElement('button'); close.type = 'button'; close.className = 'close'; close.innerHTML = 'Close <span aria-hidden="true">✕</span>'; close.setAttribute('aria-label', 'Close the film');
@@ -587,24 +700,27 @@
           var r = dlg.getBoundingClientRect();
           if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
         });
-        dlg.addEventListener('close', function () { if (vid) vid.pause(); });
-        var watch = document.createElement('button'); watch.type = 'button'; watch.className = 'hero-ghost'; watch.textContent = 'Watch the story';
-        watch.addEventListener('click', function () { dlg.showModal(); if (vid) { vid.muted = false; vid.play().catch(function () {}); } });
-        acts.appendChild(watch);
+        dlg.addEventListener('close', function () { if (vid) vid.pause(); if (musicWas) Lofi.start(); });
+        var musicWas = false;
+        var watch = document.createElement('button'); watch.type = 'button'; watch.className = 'text-link hero-watch';
+        watch.innerHTML = 'Watch the story <span aria-hidden="true">▸</span>';
+        watch.addEventListener('click', function () {
+          musicWas = Lofi.on; if (musicWas) Lofi.stop();
+          dlg.showModal(); if (vid) { vid.muted = false; vid.play().catch(function () {}); }
+        });
+        var free = copy.querySelector('.hero-free');
+        (free || cta).insertAdjacentElement('afterend', watch);
       }
-      meet.replaceWith(acts);
     }
-    var hugBtn = document.createElement('button'); hugBtn.type = 'button'; hugBtn.className = 'hero-ghost hs-hugbtn'; hugBtn.textContent = 'Try sending a hug';
-    var hugStatus = document.createElement('p'); hugStatus.className = 'hs-status'; hugStatus.setAttribute('role', 'status');
-    (copy || hero).appendChild(hugBtn); (copy || hero).appendChild(hugStatus);
-    var hug = scene.querySelector('.hs-hug');
-    function sendHug() {
-      hugStatus.textContent = 'In the app, Alex would feel this one. (Just a demo here.)';
-      setTimeout(function () { hugStatus.textContent = ''; }, 3200);
+    /* Find an evening: the heart crosses between the phones, and your light and Alex's meet on the water. */
+    var hug = scene.querySelector('.hs-hug'), meetUntil = 0;
+    if (overlap) overlap.addEventListener('ovresult', function (e) {
+      if (!e.detail.found) return;
+      Lofi.chime();
       if (still) return;
       hug.classList.remove('go'); void hug.offsetWidth; hug.classList.add('go');
-    }
-    hugBtn.addEventListener('click', sendHug);
+      meetUntil = performance.now() + 2200;
+    });
 
     /* Scroll: fly down the road; you and Alex walk toward each other; the phones lift away; the sun sinks. */
     var sun = scene.querySelector('.hs-sun'), phones = scene.querySelector('.hs-phones'), raf = 0;
@@ -649,16 +765,6 @@
 
     function moveExtras() {
       var line = day.querySelector('.day-line');
-      /* Try it: your shifts and theirs, first stop on the path. */
-      var overlap = document.getElementById('overlap');
-      if (overlap && line) {
-        var li = document.createElement('li');
-        li.className = 'moment moment-play'; li.id = 'day-try';
-        li.innerHTML = '<div class="moment-copy"><p class="moment-time"><span>Try it</span></p><p class="moment-problem">Different shifts, and no idea when you’re both free.</p><h3>Find your next evening.</h3><p>Pick your hours and your partner’s. This is the same math the app uses, sleep included.</p><span class="badge">Free</span></div>';
-        var play = document.createElement('div'); play.className = 'moment-shot moment-widget';
-        play.appendChild(overlap); li.appendChild(play);
-        line.insertBefore(li, line.firstChild);
-      }
       /* 6:40 AM: send a hug. */
       var morning = document.getElementById('day-morning');
       if (morning) {
@@ -669,7 +775,7 @@
           var heart = document.createElement('span'); heart.className = 'hug-fly'; heart.setAttribute('aria-hidden', 'true');
           morning.appendChild(heart);
           heart.addEventListener('animationend', function () { heart.remove(); });
-          note.textContent = 'Hug sent to Alex. It waits until they’re up.';
+          note.textContent = 'In the app, Alex gets it when they’re up. (Just a demo here.)';
         });
         copy.appendChild(btn); copy.appendChild(note);
       }
@@ -783,7 +889,7 @@
     function apply(m) {
       document.documentElement.classList.toggle('mode-experience', m === 'experience');
       document.documentElement.classList.toggle('mode-simple', m !== 'experience');
-      if (m === 'experience') { moveExtras(); initHeroScene(); initDay3D(); initRibbons(); wireExperienceLinks(); musicButton(); }
+      if (m === 'experience') { moveExtras(); initHeroScene(); initDay3D(); initDayMobile(); initRibbons(); wireExperienceLinks(); initBentoMore(); initShareHug(); musicButton(); }
     }
 
     /* Header switch. */
@@ -804,43 +910,16 @@
       return;
     }
 
-    /* First visit: ask. Simple is underneath already, so nothing is hidden behind the choice. */
+    /* First visit: show the page right away (the experience, or simple with Reduce Motion), then ask in a small bar. */
     var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var gate = document.createElement('div'); gate.className = 'welcome'; gate.setAttribute('role', 'dialog');
-    gate.setAttribute('aria-modal', 'true'); gate.setAttribute('aria-labelledby', 'welcome-title');
-    gate.innerHTML = '<div class="welcome-card"><img src="/icon.png" width="64" height="64" alt=""><p class="eyebrow">WELCOME TO TWOLIGHT</p>' +
-      '<h2 id="welcome-title">How would you like to look around?</h2>' +
-      '<div class="welcome-choices"><button type="button" class="welcome-go" data-mode="experience"><strong>Load the experience</strong><span>Travel through a day together and try things as you go.' + (still ? ' Has motion.' : '') + '</span></button>' +
-      '<button type="button" class="welcome-go quiet" data-mode="simple"><strong>Keep it simple</strong><span>A calm page that’s quick to read.</span></button></div>' +
-      '<label class="welcome-music"><input type="checkbox" id="welcome-music"> <span>Play soft lofi music while I look around</span></label>' +
-      '<p class="welcome-note">You can switch any time at the top of the page.</p></div>';
-    document.body.appendChild(gate);
-    document.documentElement.classList.add('welcome-open');
-    var first = gate.querySelector(still ? '[data-mode="simple"]' : '[data-mode="experience"]');
-    if (first) first.focus();
-    function choose(m) {
-      save(m); mode = m;
-      var wants = gate.querySelector('#welcome-music');
-      if (m === 'experience' && wants && wants.checked) { saveMusic('on'); Lofi.start(); } else saveMusic('off');
-      document.documentElement.classList.remove('welcome-open'); gate.remove();
-      var label = nav && nav.querySelector('.mode-switch');
-      if (label) label.textContent = m === 'experience' ? 'Simple view' : 'The experience';
-      apply(m);
-      var mb = document.querySelector('.music-btn'); if (mb) { mb.textContent = Lofi.on ? 'Music on' : 'Music off'; mb.setAttribute('aria-pressed', Lofi.on ? 'true' : 'false'); }
-      window.scrollTo(0, 0);
-      var h1 = document.getElementById('hero-title');
-      if (h1) { h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: true }); }
-    }
-    Array.prototype.forEach.call(gate.querySelectorAll('.welcome-go'), function (b) {
-      b.addEventListener('click', function () { choose(b.getAttribute('data-mode')); });
-    });
-    gate.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') choose('simple');
-      if (e.key === 'Tab') {        /* keep focus inside the choices and the music box */
-        var bs = gate.querySelectorAll('.welcome-go, #welcome-music'), a = bs[0], z = bs[bs.length - 1];
-        if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); }
-        else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
-      }
+    var first = still ? 'simple' : 'experience';
+    mode = first; apply(first);
+    if (nav) { var lab = nav.querySelector('.mode-switch'); if (lab) lab.textContent = first === 'experience' ? 'Simple view' : 'The experience'; }
+    welcomeBar(first, function (m, music) {
+      save(m); saveMusic(music ? 'on' : 'off');
+      if (m !== first) { window.location.reload(); return; }
+      var mb = document.querySelector('.music-btn');
+      if (mb) { mb.textContent = Lofi.on ? 'Music on' : 'Music off'; mb.setAttribute('aria-pressed', Lofi.on ? 'true' : 'false'); }
     });
   })();
 })();
