@@ -590,13 +590,19 @@ details p { color: var(--muted); line-height: 1.7; }
   pointer-events: none; }
 .day-3d .day-clock { font: 600 clamp(28px, 3.4vw, 44px)/1 "Fraunces", Georgia, serif; letter-spacing: -.02em; color: var(--ink);
   transition: color .4s; }
-.day-3d.is-night .day-clock, .day-3d.is-night .day-stops button { color: #f5efe7; }
-.day-3d .day-stops { display: flex; gap: 6px; pointer-events: auto; }
-.day-3d .day-stops button { min-width: 44px; min-height: 44px; border: 0; background: none; color: var(--muted); cursor: pointer;
+.day-3d.is-night .day-clock { color: #f5efe7; }
+/* One look all day: a soft dark bar that reads on morning, dusk and night skies alike. */
+.day-3d .day-stops { display: flex; gap: 4px; pointer-events: auto; padding: 8px 12px; border-radius: 16px;
+  background: rgba(28, 24, 34, .72); border: 1px solid rgba(255, 255, 255, .14);
+  box-shadow: 0 12px 32px -14px rgba(0, 0, 0, .55); backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2); }
+.day-3d .day-stops button { min-width: 44px; min-height: 44px; border: 0; background: none; color: rgba(245, 239, 231, .72); cursor: pointer; border-radius: 10px;
   font: 600 11px/1 "DM Sans", sans-serif; letter-spacing: .1em; display: grid; place-items: center; gap: 6px; padding: 0 4px; }
 .day-3d .day-stops button::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: .4;
   transition: transform .25s, opacity .25s; }
-.day-3d .day-stops button[aria-current="true"]::before { opacity: 1; transform: scale(1.5); background: var(--accent); }
+.day-3d .day-stops button[aria-current="true"]::before { opacity: 1; transform: scale(1.5); background: #f08a68; }
+.day-3d .day-stops button[aria-current="true"] { color: #fff; }
+.day-3d .day-stops button:hover { color: #fff; background: rgba(255, 255, 255, .08); }
+.day-3d .day-stops button::before { opacity: .55; }
 .day-3d .day-hint { position: absolute; top: 24px; left: 50%; transform: translateX(-50%); font-size: 12px; letter-spacing: .14em;
   text-transform: uppercase; color: var(--muted); transition: opacity .4s; }
 .day:not(.day-3d) .day-sky, .day:not(.day-3d) .day-lights { display: none; }
