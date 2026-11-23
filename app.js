@@ -847,7 +847,8 @@
           '<div class="bq-pick" role="group" aria-label="Add flowers"><button type="button" data-f="rose">Rose</button><button type="button" data-f="tulip">Tulip</button>' +
           '<button type="button" data-f="daisy">Daisy</button><button type="button" data-f="green">Greenery</button></div>' +
           '<div class="bq-actions"><button type="button" class="play-btn bq-wrap-btn" disabled>Wrap it</button><button type="button" class="play-btn quiet bq-send" disabled>Send to Alex</button></div>' +
-          '<p class="play-note" role="status">Tap a few flowers.</p>';
+          '<p class="play-note" role="status">Tap a few flowers.</p>' +
+          '<p class="bq-real">A simple sketch. In the app, the flowers are real 3D&nbsp;models.</p>';
         if (fshot) fshot.replaceWith(f); else fl.appendChild(f);
         fl.classList.add('moment-play');
         var heads = f.querySelector('.bq-heads'), stems = f.querySelector('.bq-stems'), svg = f.querySelector('.bq');
