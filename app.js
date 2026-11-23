@@ -260,7 +260,7 @@
     }
     /* Each moment waits at its own bend, turned toward the road. */
     moments.forEach(function (m, i) {
-      m.dataset.base = 'translate3d(' + px(i).toFixed(1) + 'px, 0, ' + pz(i).toFixed(1) + 'px) rotateY(' + (-yaw(i) * 0.6).toFixed(2) + 'deg)';
+      m.dataset.base = 'translate3d(' + px(i).toFixed(1) + 'px, 0, ' + pz(i).toFixed(1) + 'px)';
     });
 
     /* HUD: the time of day, and stops to jump to. */
@@ -271,15 +271,35 @@
       var time = (m.querySelector('.moment-time') || {}).textContent || String(i + 1);
       var btn = document.createElement('button'); btn.type = 'button'; btn.textContent = time.replace(/ (AM|PM)$/, '');
       btn.setAttribute('aria-label', 'Go to ' + time);
-      btn.addEventListener('click', function () {
-        var top = runway.getBoundingClientRect().top + window.scrollY;
-        var span = runway.offsetHeight - window.innerHeight;
-        window.scrollTo({ top: top + span * (i / (N - 1)), behavior: 'smooth' });
-      });
+      btn.addEventListener('click', function () { goTo(i); });
       stops.appendChild(btn);
     });
     var hint = document.createElement('p'); hint.className = 'day-hint'; hint.textContent = 'Scroll to travel through the day';
     hud.appendChild(clock); hud.appendChild(stops); stage.appendChild(hud); stage.appendChild(hint);
+
+    /* Bring stop i to the center of the stage. */
+    function stopY(i) {
+      var top = runway.getBoundingClientRect().top + window.scrollY;
+      return top + (runway.offsetHeight - window.innerHeight) * (i / (N - 1));
+    }
+    function goTo(i) { window.scrollTo({ top: stopY(i), behavior: 'smooth' }); }
+    /* Touching or tabbing into a stop centers it, so it's in focus while you play with it. */
+    moments.forEach(function (m, i) {
+      function center() { if (Math.abs(window.scrollY - stopY(i)) > 4) goTo(i); }
+      m.addEventListener('pointerdown', center);
+      m.addEventListener('focusin', center);
+    });
+    /* When scrolling settles near a stop, ease the last bit so the stop sits centered. */
+    var settle = 0;
+    window.addEventListener('scroll', function () {
+      clearTimeout(settle);
+      settle = setTimeout(function () {
+        var r = runway.getBoundingClientRect();
+        if (r.top > 0 || r.bottom < window.innerHeight) return;            // only inside the path
+        var span = runway.offsetHeight - window.innerHeight, t = (-r.top / span) * (N - 1), i = Math.round(t);
+        if (Math.abs(t - i) > 0.02 && Math.abs(t - i) < 0.3) goTo(i);
+      }, 180);
+    }, { passive: true });
 
     function size() { runway.style.height = (N * 85 + 60) + 'vh'; }
     size();
@@ -297,7 +317,10 @@
         var o = d > 0 ? Math.max(0, 1 - d * 3.2) : Math.max(0.1, 1 - ad * 0.5);
         m.style.opacity = o.toFixed(3);
         m.style.filter = ad > 0.35 ? 'blur(' + Math.min(6, (ad - 0.35) * 4).toFixed(1) + 'px)' : 'none';
-        m.style.transform = m.dataset.base + (d > 0 ? ' translate3d(' + (d * 260 * (i % 2 ? -1 : 1)).toFixed(1) + 'px, ' + (-d * 90).toFixed(1) + 'px, 0)' : '');
+        /* Angled while you travel toward it; square to the camera when it's the stop you're on. */
+        var focus = Math.max(0, 1 - ad * 2.5), yi = yaw(i);
+        var turn = (-yi * 0.6) * (1 - focus) + (a * 0.55) * focus;
+        m.style.transform = m.dataset.base + ' rotateY(' + turn.toFixed(2) + 'deg)' + (d > 0 ? ' translate3d(' + (d * 260 * (i % 2 ? -1 : 1)).toFixed(1) + 'px, ' + (-d * 90).toFixed(1) + 'px, 0)' : '');
         m.style.pointerEvents = ad < 0.5 ? 'auto' : 'none';
       });
       /* Sky: morning -> noon -> dusk -> night across the day. */
@@ -394,6 +417,79 @@
     });
     return { start: start, stop: stop, get on() { return on; } };
   })();
+
+  /* ---------- Hero, experience mode: twilight horizon, the road at your feet, two phones and a hug ---------- */
+  function initHeroScene() {
+    var hero = document.querySelector('.hero');
+    if (!hero || hero.querySelector('.hero-scene')) return;
+    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var scene = document.createElement('div'); scene.className = 'hero-scene'; scene.setAttribute('aria-hidden', 'true');
+    scene.innerHTML = '<div class="hs-stars"></div><div class="hs-sun"></div><div class="hs-ground"><div class="hs-road"></div></div>' +
+      '<div class="hs-phones"><div class="hs-phone mine"><img src="/media/day-morning.jpg" alt="" width="560" height="1217"><span class="who">You</span></div>' +
+      '<div class="hs-link"></div><span class="hs-hug"></span>' +
+      '<div class="hs-phone theirs"><img src="/media/day-countdowns-dark.jpg" alt="" width="560" height="1217"><span class="who">Alex</span></div>' +
+      '<div class="hs-toast">Alex got your hug.</div></div>';
+    hero.insertBefore(scene, hero.firstChild);
+    var road = scene.querySelector('.hs-road');
+    function rx(d) { return Math.sin(d / 650) * 180; }
+    for (var d = -200; d <= 4200; d += 110) {
+      var l = document.createElement('b');
+      l.style.transform = 'translate(' + (rx(d) - 70).toFixed(1) + 'px,' + (-d) + 'px)'; road.appendChild(l);
+      var r = document.createElement('b');
+      r.style.transform = 'translate(' + (rx(d) + 70).toFixed(1) + 'px,' + (-d) + 'px)'; road.appendChild(r);
+    }
+    var you = document.createElement('b'); you.className = 'you'; road.appendChild(you);
+    var them = document.createElement('b'); them.className = 'them'; road.appendChild(them);
+
+    /* Buttons: start the day, watch the story (the film moves into a dialog), send a hug. */
+    var copy = hero.querySelector('.hero-copy'), meet = copy && copy.querySelector('.button');
+    var film = hero.querySelector('.film');
+    if (meet) {
+      var acts = document.createElement('div'); acts.className = 'hero-actions';
+      var start = document.createElement('a'); start.className = 'button'; start.href = '#day';
+      start.innerHTML = 'Start the day <span aria-hidden="true">↓</span>';
+      acts.appendChild(start);
+      if (film && window.HTMLDialogElement) {
+        var dlg = document.createElement('dialog'); dlg.className = 'film-dialog'; dlg.setAttribute('aria-label', 'The Twolight story');
+        var close = document.createElement('button'); close.type = 'button'; close.className = 'close'; close.textContent = 'Close';
+        dlg.appendChild(close); dlg.appendChild(film); document.body.appendChild(dlg);
+        var vid = film.querySelector('video');
+        close.addEventListener('click', function () { dlg.close(); });
+        dlg.addEventListener('close', function () { if (vid) vid.pause(); });
+        var watch = document.createElement('button'); watch.type = 'button'; watch.className = 'hero-ghost'; watch.textContent = 'Watch the story';
+        watch.addEventListener('click', function () { dlg.showModal(); if (vid) { vid.muted = false; vid.play().catch(function () {}); } });
+        acts.appendChild(watch);
+      }
+      meet.replaceWith(acts);
+    }
+    var hugBtn = document.createElement('button'); hugBtn.type = 'button'; hugBtn.className = 'hero-ghost hs-hugbtn'; hugBtn.textContent = 'Send Alex a hug';
+    (copy || hero).appendChild(hugBtn);
+    var hug = scene.querySelector('.hs-hug'), toast = scene.querySelector('.hs-toast'), toastTimer = 0;
+    function sendHug() {
+      hugBtn.textContent = 'Hug sent'; setTimeout(function () { hugBtn.textContent = 'Send Alex a hug'; }, 2600);
+      hug.classList.remove('go'); void hug.offsetWidth; hug.classList.add('go');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { toast.classList.add('show'); toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2200); }, still ? 0 : 1300);
+    }
+    hugBtn.addEventListener('click', sendHug);
+    if (!still) setTimeout(sendHug, 1800);
+
+    /* Scroll: fly down the road; you and Alex walk toward each other; the phones lift away; the sun sinks. */
+    var sun = scene.querySelector('.hs-sun'), phones = scene.querySelector('.hs-phones'), raf = 0;
+    function place(p) {
+      var dy = 900 + p * 1800, dt = 2600 - p * 1600;          // distance down the road for each light
+      if (dt < dy + 60) { dy = dt = (dy + dt) / 2; }
+      you.style.transform = 'translate(' + (rx(dy) - 14).toFixed(1) + 'px,' + (-dy) + 'px)';
+      them.style.transform = 'translate(' + (rx(dt) + 14).toFixed(1) + 'px,' + (-dt) + 'px)';
+      road.style.transform = 'rotateX(76deg) translateY(' + (p * 1400).toFixed(1) + 'px)';
+      sun.style.transform = 'translateY(' + (p * 90).toFixed(1) + 'px) scale(' + (1 - p * 0.15).toFixed(3) + ')';
+      phones.style.transform = 'translateY(' + (-p * 260).toFixed(1) + 'px)';
+      phones.style.opacity = Math.max(0, 1 - p * 1.6).toFixed(3);
+    }
+    function frame() { raf = 0; var h = hero.offsetHeight || 1; place(Math.min(1, Math.max(0, window.scrollY / h))); }
+    place(0);
+    if (!still) window.addEventListener('scroll', function () { if (!raf) raf = requestAnimationFrame(frame); }, { passive: true });
+  }
 
   /* ---------- Two ways to see Twolight: the experience (3D path + things to try) or simple ----------
      Chosen on the first visit, remembered on this device only (localStorage, nothing is sent anywhere),
@@ -551,7 +647,7 @@
     function apply(m) {
       document.documentElement.classList.toggle('mode-experience', m === 'experience');
       document.documentElement.classList.toggle('mode-simple', m !== 'experience');
-      if (m === 'experience') { moveExtras(); initDay3D(); musicButton(); }
+      if (m === 'experience') { moveExtras(); initHeroScene(); initDay3D(); musicButton(); }
     }
 
     /* Header switch. */
@@ -595,7 +691,7 @@
       if (label) label.textContent = m === 'experience' ? 'Simple view' : 'The experience';
       apply(m);
       var mb = document.querySelector('.music-btn'); if (mb) { mb.textContent = Lofi.on ? 'Music on' : 'Music off'; mb.setAttribute('aria-pressed', Lofi.on ? 'true' : 'false'); }
-      if (m === 'experience') day.scrollIntoView({ behavior: still ? 'auto' : 'smooth' });
+      window.scrollTo(0, 0);
     }
     Array.prototype.forEach.call(gate.querySelectorAll('.welcome-go'), function (b) {
       b.addEventListener('click', function () { choose(b.getAttribute('data-mode')); });

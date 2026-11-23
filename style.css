@@ -692,3 +692,73 @@ details p { color: var(--muted); line-height: 1.7; }
 @keyframes cd-in { from { opacity: 0; transform: translateY(10px) scale(.96); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .bq-flower, .cd-tile { animation: none; } .bq { transition: none; } }
 .day-3d #day-flowers.moment-play { grid-template-columns: 1fr 380px; width: 900px; margin-left: -450px; }
+
+/* ---------- Hero, experience mode: the opening shot of the day ----------
+   A twilight horizon, the path of lights starting at your feet, you (clay) and your partner (teal) as two lights on it,
+   and two phones floating above with a hug travelling between them. Scrolling flies you down the road into the day. */
+.mode-experience body.home > header { position: absolute; left: 0; right: 0; top: 0; z-index: 6; border: 0; background: none; }
+.mode-experience body.home > header .brand, .mode-experience body.home > header nav a, .mode-experience body.home > header .mode-switch { color: #f5efe7; }
+.mode-experience .hero { position: relative; max-width: none; min-height: 100vh; margin: 0; padding: 0; display: block; overflow: hidden; isolation: isolate;
+  background: linear-gradient(180deg, #1d1a2e 0%, #3a2a4c 34%, #8e4a62 58%, #e48a67 74%, #f5b98a 82%, #2a2238 82.2%, #15171c 100%); color: #f5efe7; }
+.mode-experience .hero .hero-product { display: none; }
+.mode-experience .hero-copy { position: relative; z-index: 3; max-width: 760px; margin: 0 auto; padding: 120px 24px 0; text-align: center; }
+.mode-experience .hero .eyebrow { color: #f6c3a6; }
+.mode-experience .hero h1 { color: #f5efe7; font-size: clamp(44px, 6.2vw, 84px); text-shadow: 0 2px 30px #0005; }
+.mode-experience .hero h1 em { color: #f6b089; }
+.mode-experience .hero .lede { color: #eadfd4; margin-inline: auto; }
+.mode-experience .hero .button { background: #f5efe7; color: #28201b; }
+.mode-experience .hero .availability, .mode-experience .hero .availability a { color: #eadfd4; }
+.hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.hero-ghost { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 20px; border-radius: 10px; cursor: pointer;
+  border: 1px solid #ffffff55; background: #ffffff12; color: #f5efe7; font: 600 16px "DM Sans", sans-serif; text-decoration: none;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.hero-ghost:hover { background: #ffffff22; }
+.hero-scene { position: absolute; inset: 0; z-index: 1; pointer-events: none; perspective: 900px; perspective-origin: 50% 80%; }
+.hs-stars { position: absolute; inset: 0 0 30% 0; background-image: radial-gradient(1.2px 1.2px at 12% 18%, #fff9 50%, transparent), radial-gradient(1px 1px at 28% 8%, #fff7 50%, transparent),
+  radial-gradient(1.4px 1.4px at 47% 22%, #fffb 50%, transparent), radial-gradient(1px 1px at 66% 12%, #fff6 50%, transparent), radial-gradient(1.3px 1.3px at 81% 26%, #fff9 50%, transparent),
+  radial-gradient(1px 1px at 91% 9%, #fff7 50%, transparent), radial-gradient(1px 1px at 6% 34%, #fff5 50%, transparent), radial-gradient(1.2px 1.2px at 58% 4%, #fff8 50%, transparent); }
+.hs-sun { position: absolute; left: 50%; top: 82%; width: 260px; height: 260px; margin: -130px 0 0 -130px; border-radius: 50%;
+  background: radial-gradient(circle, #ffe3b8 0%, #f8b27c 38%, #ee8a63aa 58%, transparent 72%); will-change: transform; }
+.hs-ground { position: absolute; left: 50%; top: 104%; width: 0; height: 0; transform-style: preserve-3d; }
+.hs-road { position: absolute; left: 0; top: 0; transform-style: preserve-3d; transform: rotateX(76deg); will-change: transform; }
+.hs-road b { position: absolute; width: 12px; height: 12px; margin: -6px; border-radius: 50%;
+  background: radial-gradient(circle, #fff0c8 0%, #e9b930 45%, transparent 72%); box-shadow: 0 0 18px 6px #e9b93055; }
+.hs-road .you, .hs-road .them { width: 22px; height: 22px; margin: -11px; }
+.hs-road .you { background: radial-gradient(circle, #ffe2d6 0%, #e8866b 45%, transparent 72%); box-shadow: 0 0 30px 10px #e8866b88; }
+.hs-road .them { background: radial-gradient(circle, #e0f4f1 0%, #6fb3b8 45%, transparent 72%); box-shadow: 0 0 30px 10px #6fb3b888; }
+.hs-phones { position: absolute; left: 50%; top: 70%; width: 0; height: 0; transform-style: preserve-3d; perspective: 1000px; z-index: 2; will-change: transform, opacity; }
+.hs-phone { position: absolute; width: 160px; aspect-ratio: 560 / 1217; padding: 6px; border-radius: 28px; background: #1c1b1f;
+  box-shadow: 0 30px 60px -20px #000a, 0 0 0 1px #ffffff1a; top: -190px; }
+.hs-phone img { width: 100%; height: 100%; object-fit: cover; border-radius: 22px; display: block; }
+.hs-phone.mine { left: -580px; transform: rotateY(26deg) rotateZ(-4deg); }
+.hs-phone.theirs { left: 420px; transform: rotateY(-26deg) rotateZ(4deg); }
+.hs-phone .who { position: absolute; left: 0; right: 0; bottom: -30px; text-align: center; font: 600 11px "DM Sans", sans-serif; letter-spacing: .14em; text-transform: uppercase; }
+.hs-phone.mine .who { color: #f6b089; } .hs-phone.theirs .who { color: #9fd3cf; }
+.hs-link { position: absolute; left: -420px; top: -40px; width: 840px; height: 2px; background: linear-gradient(90deg, #e8866b, #f5efe7aa, #6fb3b8); opacity: .55; }
+.hs-hug { position: absolute; left: -420px; top: -51px; width: 22px; height: 22px; background: #f6b089; opacity: 0;
+  clip-path: path("M11 20 C11 20 1 13.5 1 7.5 C1 4 3.5 1.5 6.5 1.5 C8.5 1.5 10 2.8 11 4.5 C12 2.8 13.5 1.5 15.5 1.5 C18.5 1.5 21 4 21 7.5 C21 13.5 11 20 11 20Z"); }
+.hs-hug.go { animation: hs-hug 1.6s cubic-bezier(.45,0,.2,1) forwards; }
+@keyframes hs-hug { 0% { opacity: 0; transform: translateX(0) scale(.6); } 12% { opacity: 1; } 50% { transform: translateX(409px) translateY(-60px) scale(1.2); }
+  88% { opacity: 1; } 100% { opacity: 0; transform: translateX(818px) scale(.7); } }
+.hs-toast { position: absolute; left: 405px; top: -250px; width: 190px; padding: 8px 10px; border-radius: 12px; background: #f5efe7; color: #28201b;
+  font: 600 12px/1.35 "DM Sans", sans-serif; box-shadow: 0 12px 30px -12px #0008; opacity: 0; transform: translateY(6px); transition: opacity .35s, transform .35s; }
+.hs-toast.show { opacity: 1; transform: none; }
+.hs-hugbtn { margin-top: 18px; }
+.film-dialog { border: 0; padding: 0; background: transparent; width: min(960px, 92vw); }
+.film-dialog::backdrop { background: #0b0b10d9; }
+.film-dialog video { width: 100%; border-radius: 18px; display: block; }
+.film-dialog .close { position: absolute; right: -6px; top: -54px; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid #ffffff44;
+  background: #ffffff14; color: #f5efe7; font: 600 14px "DM Sans", sans-serif; cursor: pointer; }
+@media (max-width: 1180px) {
+  .hs-phone.mine { left: -470px; } .hs-phone.theirs { left: 310px; }
+  .hs-link { left: -310px; width: 620px; } .hs-hug { left: -310px; }  .hs-toast { left: 295px; }
+}
+@media (max-width: 899px) {
+  .mode-experience .hero-copy { padding-top: 100px; }
+  .hs-phones { top: 84%; }
+  .hs-phone { width: 104px; top: -120px; } .hs-phone.mine { left: -150px; } .hs-phone.theirs { left: 46px; }
+  .hs-link { left: -46px; width: 92px; top: -40px; } .hs-hug { left: -46px; top: -51px; } .hs-toast { display: none; }
+  @keyframes hs-hug { 0% { opacity: 0; transform: translateX(0) scale(.6); } 12% { opacity: 1; } 50% { transform: translateX(35px) translateY(-20px) scale(1.1); } 88% { opacity: 1; } 100% { opacity: 0; transform: translateX(70px) scale(.7); } }
+}
+/* Simple mode: the same sky, still. */
+.mode-simple .hero { position: relative; }
