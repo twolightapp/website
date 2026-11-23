@@ -901,6 +901,12 @@ details p { color: var(--muted); line-height: 1.7; }
 .day-more summary span { font-weight: 400; font-size: 13px; color: var(--muted); }
 .day-more-list { list-style: none; margin: 0; padding: 0 16px 18px; display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; align-items: flex-start; }
 .day-more-list > .moment { flex: 0 0 84% !important; scroll-snap-align: start; }
+/* Every card in the row is the same height, with its screen docked at the bottom in one cropped window,
+   so the cards line up as you swipe. (Flowers keeps its bouquet builder whole.) */
+.day-more-list { align-items: stretch; }
+.day-more-list > .moment { overflow: hidden; }
+.day-more-list > .moment > .moment-shot { margin-top: auto; }
+.day-more-list > .moment > .moment-shot:not(.moment-widget) { height: 300px; margin-bottom: -24px; overflow: hidden; align-items: flex-start; }
 
 .b-home .bento-shot.phone-crop { height: 260px; }
 .b-talk .bento-shot.phone-crop img { margin-top: -58%; }       /* show "Alex wants to talk" and I'm here */
