@@ -68,3 +68,10 @@ Motion should feel like light arriving, calm and short. It never carries meaning
 - No render-blocking third-party anything. One stylesheet, one deferred script.
 - The film uses a poster image and `preload="none"`. Keep the hero poster preloaded.
 - Check Lighthouse performance and accessibility before and after any visual change. They shouldn't get worse.
+
+## Previews (set up 2026-11-22)
+
+Every branch pushed to GitHub gets its own preview from Cloudflare Pages (project `twolight-preview`), at
+`https://<branch-name-with-dashes>.twolight-preview.pages.dev` (for example `claude/day-timeline` →
+`claude-day-timeline.twolight-preview.pages.dev`). `https://twolight-preview.pages.dev` mirrors `main`.
+The live site, twolightapp.com, is still served by GitHub Pages; previews never change it.
