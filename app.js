@@ -772,13 +772,19 @@
     function saveMusic(v) { try { localStorage.setItem(MKEY, v); } catch (e) {} }
     function musicSaved() { try { return localStorage.getItem(MKEY) === 'on'; } catch (e) { return false; } }
     /* A returning visitor who chose music: it's "on" but waits for their first tap or key (browsers need one to play sound). */
-    var musicPending = mode === 'experience' && musicSaved();
+    var musicPending = mode === 'experience' && musicSaved(), musicLabel = function () {};
     function musicButton() {
       if (document.querySelector('.music-btn')) return;
       var b = document.createElement('button'); b.type = 'button'; b.className = 'music-btn';
-      function label() { var on = Lofi.on || musicPending; b.textContent = on ? 'Music on' : 'Music off'; b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+      /* Waiting for a click (scrolling doesn't count as permission to play sound): say what a click does. */
+      function label() {
+        b.textContent = Lofi.on ? 'Music on' : musicPending ? 'Play music' : 'Music off';
+        b.setAttribute('aria-pressed', Lofi.on ? 'true' : 'false');
+        b.classList.toggle('waiting', musicPending && !Lofi.on);
+      }
+      musicLabel = label;
       b.addEventListener('click', function () {
-        if (Lofi.on || musicPending) { musicPending = false; Lofi.stop(); saveMusic('off'); } else { Lofi.start(); saveMusic('on'); }
+        if (Lofi.on) { Lofi.stop(); saveMusic('off'); } else { musicPending = false; Lofi.start(); saveMusic('on'); }
         setTimeout(label, 0);
       });
       label();
@@ -928,12 +934,12 @@
       apply(mode);
       if (musicPending) {
         /* Start on the first click or key, not on pointerdown: iPhone Safari only unlocks sound on a full tap.
-           A first click on the Music button itself is left to the button (it reads "Music on", so a click turns it off). */
+           A first click on the Music button itself is left to the button (it reads "Play music", so a click starts it). */
         var once = function (e) {
           window.removeEventListener('click', once, true); window.removeEventListener('keydown', once, true);
           if (!musicPending) return;
           if (e.target && e.target.closest && e.target.closest('.music-btn')) return;
-          musicPending = false; Lofi.start();
+          musicPending = false; Lofi.start(); setTimeout(musicLabel, 0);
         };
         window.addEventListener('click', once, true); window.addEventListener('keydown', once, true);
       }

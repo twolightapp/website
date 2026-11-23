@@ -973,3 +973,5 @@ details p { color: var(--muted); line-height: 1.7; }
   box-shadow: 0 24px 60px -30px #0005; }
 /* Founder note: which part of the story is Plus. */
 .founder-plus { margin: 2px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
+/* Music chosen last time, waiting for a click to play: the button shows it in the warm accent. */
+.mode-experience body.home > header .music-btn.waiting, .music-btn.waiting { color: #f6b089; border-color: #f6b089; opacity: 1; }
