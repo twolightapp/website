@@ -794,3 +794,72 @@ details p { color: var(--muted); line-height: 1.7; }
 @media (max-width: 1180px) and (min-width: 900px) { .hs-phones { top: 90%; } .hs-phone { width: 130px; } }
 @media (max-width: 899px) { .hs-phones { display: none; } .mode-experience .hero { min-height: 92vh; } }
 @media (max-width: 899px) { .mode-experience .hero-copy { padding-top: 172px; } .music-btn { min-height: 36px; } }
+
+/* ---------- Experience: one dark palette, top to bottom (whatever the system appearance) ---------- */
+.mode-experience .home { --bg: #13121a; --card: #1f1d28; --ink: #f5efe7; --muted: #bdb3ab; --line: rgba(255,255,255,.1); --accent: #f0ac8c;
+  --partner: #8abbb4; --section-bg: transparent; --featured-bg: rgba(40,34,48,.82); --button-bg: #f5efe7; --button-ink: #28201b; --button-hover: #ffffff;
+  color-scheme: dark; }
+.mode-experience body.home { background: #13121a; }
+.mode-experience main, .mode-experience footer { position: relative; z-index: 1; }
+.mode-experience .intro-strip, .mode-experience #together, .mode-experience .privacy-note { display: none; }
+.mode-experience .plus-section { background: transparent; border-color: transparent; }
+.mode-experience .plan { background: rgba(31, 29, 40, .86); border-color: rgba(255,255,255,.1); }
+.mode-experience .plan.featured { background: rgba(48, 38, 52, .9); border-color: rgba(240,172,140,.35); }
+.mode-experience .faq-list details, .mode-experience .all-features { background: rgba(31, 29, 40, .8); border-color: rgba(255,255,255,.1); }
+.mode-experience .closing, .mode-experience footer { border-color: rgba(255,255,255,.08); }
+.mode-experience .closing::before { opacity: .35; }
+/* The hero and the day path let the ribbons through at their edges. */
+.mode-experience .hero { background: linear-gradient(180deg, #1d1a2e 0%, #3a2a4c 34%, #8e4a62 58%, #e48a67 74%, #f5b98a 82%, #2a2238 82.2%, rgba(19,18,26,.6) 96%, rgba(19,18,26,0) 100%); }
+.day-3d .day-sky i { mix-blend-mode: normal; }
+.day-3d .day-sky { opacity: .78; }
+
+/* Ribbons: a fixed canvas behind everything. */
+.ribbons { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
+
+/* ---------- Bento: the app at a glance (experience mode) ---------- */
+.bento-section { display: none; }
+.mode-experience .bento-section { display: block; padding-block: 96px 72px; }
+.bento-head { display: flex; align-items: end; justify-content: space-between; gap: 32px; margin-bottom: 36px; }
+.bento-head h2 { margin: 0; }
+.bento-head h2 em { color: #f6b089; font-style: italic; }
+.bento { display: grid; grid-template-columns: repeat(12, 1fr); gap: 18px; }
+.bento-card { position: relative; overflow: hidden; display: grid; gap: 20px; padding: 28px; border-radius: 26px;
+  background: linear-gradient(160deg, rgba(44, 38, 56, .88), rgba(24, 22, 32, .9)); border: 1px solid rgba(255,255,255,.1);
+  box-shadow: 0 30px 60px -40px #000c; transition: border-color .25s; }
+.bento-card:hover { border-color: rgba(240, 172, 140, .35); }
+.bento-card h3 { font-size: clamp(24px, 2.2vw, 30px) !important; margin: 0 0 10px !important; }
+.bento-copy p:not(.eyebrow) { color: #cfc5bc; margin: 0 0 14px; font-size: 16px; }
+.bento-copy .eyebrow { margin-bottom: 12px; }
+.bento-copy .badge { display: inline-block; margin-top: 4px; }
+.bento-copy .text-link { display: inline-block; margin: 0 0 12px; color: #f6b089; }
+.b-lead  { grid-column: span 8; grid-template-columns: 1fr 1.1fr; align-items: center; }
+.b-every { grid-column: span 4; align-content: space-between; }
+.b-talk  { grid-column: span 6; grid-template-columns: 1.2fr .8fr; }
+.b-home  { grid-column: span 6; grid-template-columns: 1.2fr .8fr; }
+.b-keep  { grid-column: span 8; grid-template-columns: 1.3fr .7fr; }
+.b-private { grid-column: span 4; align-content: end;
+  background: radial-gradient(120% 90% at 100% 0%, rgba(111,179,184,.22), transparent 60%), linear-gradient(160deg, rgba(44,38,56,.88), rgba(24,22,32,.9)); }
+.bento-shot { margin: 0; }
+.bento-shot.square img { width: 100%; height: auto; border-radius: 18px; display: block; }
+.bento-shot.phone-crop { align-self: end; margin: 0 -28px -28px 0; height: 300px; overflow: hidden; border-radius: 22px 0 0 0;
+  border: 1px solid rgba(255,255,255,.12); border-right: 0; border-bottom: 0; }
+.bento-shot.phone-crop img { width: 100%; height: auto; display: block; }
+.bento-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.bento-list li { display: grid; grid-template-columns: 22px 1fr; column-gap: 10px; padding: 12px 14px; border-radius: 14px;
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); font-size: 15px; color: #f5efe7; }
+.bento-list li small { grid-column: 2; color: #a99f97; font-size: 12.5px; }
+.bento-list i { grid-row: span 2; width: 18px; height: 18px; margin-top: 3px; border-radius: 50%; border: 2px solid #8abbb4; }
+.bento-list li:first-child i { background: #8abbb4; box-shadow: inset 0 0 0 3px #1f1d28; }
+@media (max-width: 1023px) {
+  .bento { grid-template-columns: repeat(2, 1fr); }
+  .b-lead, .b-keep { grid-column: span 2; }
+  .b-every, .b-talk, .b-home, .b-private { grid-column: span 1; grid-template-columns: 1fr; }
+}
+@media (max-width: 680px) {
+  .mode-experience .bento-section { padding-block: 64px 48px; }
+  .bento-head { flex-direction: column; align-items: start; }
+  .bento { grid-template-columns: 1fr; }
+  .bento-card, .b-lead, .b-keep { grid-column: auto; grid-template-columns: 1fr; padding: 22px; }
+  .bento-shot.phone-crop { margin: 0 -22px -22px 0; height: 240px; }
+}
+@media (prefers-reduced-motion: reduce) { .bento-card { transition: none; } }

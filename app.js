@@ -283,6 +283,12 @@
       return top + (runway.offsetHeight - window.innerHeight) * (i / (N - 1));
     }
     function goTo(i) { window.scrollTo({ top: stopY(i), behavior: 'smooth' }); }
+    dayGoTo = function (id) { for (var k = 0; k < moments.length; k++) if (moments[k].id === id) { goTo(k); return true; } return false; };
+    dayProgress = function () {
+      var r = runway.getBoundingClientRect(), span = runway.offsetHeight - window.innerHeight;
+      if (r.top > window.innerHeight || r.bottom < 0) return -1;
+      return span > 0 ? Math.min(1, Math.max(0, -r.top / span)) * (N - 1) : 0;
+    };
     /* Touching or tabbing into a stop centers it, so it's in focus while you play with it. */
     moments.forEach(function (m, i) {
       function center() { if (Math.abs(window.scrollY - stopY(i)) > 4) goTo(i); }
@@ -419,6 +425,80 @@
     });
     return { start: start, stop: stop, get on() { return on; } };
   })();
+
+  var dayGoTo = null, dayProgress = null;
+
+  /* ---------- Ribbons: two lights behind the whole page, clay for you and teal for your partner ----------
+     They drift apart during the busy parts of the day and braid together at each stop and at the end.
+     One fixed canvas, drawn at reduced resolution (the softness is the point). Still on phones and with Reduce Motion. */
+  function initRibbons() {
+    if (document.querySelector('.ribbons')) return;
+    var cv = document.createElement('canvas'); cv.className = 'ribbons'; cv.setAttribute('aria-hidden', 'true');
+    document.body.insertBefore(cv, document.body.firstChild);
+    var g = cv.getContext('2d'); if (!g) return;
+    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches || !window.matchMedia('(min-width: 900px)').matches;
+    var W = 0, H = 0, SCALE = 0.5, time = 0, eased = 0.6, raf = 0, last = 0;
+    function size() {
+      W = Math.round(window.innerWidth * SCALE); H = Math.round(window.innerHeight * SCALE);
+      cv.width = W; cv.height = H;
+    }
+    /* How far apart the two lights are: 0 = braided together, 1 = far apart. */
+    function apartness() {
+      var t = dayProgress ? dayProgress() : -1;
+      if (t >= 0) { var f = t - Math.floor(t); return 0.25 + 0.75 * Math.sin(f * Math.PI); }   // together at every stop
+      var doc = document.documentElement, end = doc.scrollHeight - window.innerHeight;
+      var q = end > 0 ? window.scrollY / end : 0;
+      return q > 0.85 ? Math.max(0.05, 0.55 - (q - 0.85) * 3.4) : 0.55;                        // they meet at the end
+    }
+    function strand(color, sign, sep, phase) {
+      var mid = H * 0.56, amp = H * 0.16, n = 64;
+      for (var k = 0; k < 9; k++) {                       // nine fine strands make one silky ribbon
+        var spread = (k - 4) * H * 0.006;
+        g.beginPath();
+        for (var i = 0; i <= n; i++) {
+          var x = (i / n) * (W * 1.2) - W * 0.1, u = i / n;
+          var y = mid + amp * Math.sin(u * 3.1 + phase * 0.6) * (0.6 + 0.4 * Math.sin(phase * 0.3))
+                + sign * sep * Math.sin(u * 5.2 + phase) + spread * (1 + Math.sin(u * 4 + phase + k));
+          if (i === 0) g.moveTo(x, y); else g.lineTo(x, y);
+        }
+        g.strokeStyle = color.replace('A', (k === 4 ? 0.5 : 0.11).toString());
+        g.lineWidth = k === 4 ? 1.6 : 3.2;
+        g.stroke();
+      }
+    }
+    function draw() {
+      g.clearRect(0, 0, W, H);
+      g.globalCompositeOperation = 'lighter';
+      var sep = H * (0.04 + 0.2 * eased);
+      strand('rgba(232,134,107,A)', 1, sep, time);
+      strand('rgba(111,179,184,A)', -1, sep, time + 0.4);
+      g.globalCompositeOperation = 'source-over';
+    }
+    function loop(ts) {
+      raf = requestAnimationFrame(loop);
+      if (ts - last < 32) return;                         // ~30 fps is plenty for slow light
+      var dt = Math.min(0.1, (ts - last) / 1000); last = ts;
+      time += dt * 0.25;
+      eased += (apartness() - eased) * 0.08;
+      draw();
+    }
+    size(); eased = apartness(); draw();
+    window.addEventListener('resize', function () { size(); draw(); });
+    if (still) { window.addEventListener('scroll', function () { if (!raf) raf = requestAnimationFrame(function () { raf = 0; eased = apartness(); draw(); }); }, { passive: true }); return; }
+    raf = requestAnimationFrame(loop);
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { cancelAnimationFrame(raf); raf = 0; } else if (!raf) { last = performance.now(); raf = requestAnimationFrame(loop); }
+    });
+  }
+
+  /* Links to a stop (#day-talk) travel along the path instead of jumping; "The app" goes to the bento. */
+  function wireExperienceLinks() {
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href^="#day-"]');
+      if (a && dayGoTo && dayGoTo(a.getAttribute('href').slice(1))) e.preventDefault();
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('a[href="#together"]'), function (a) { a.setAttribute('href', '#features'); });
+  }
 
   /* ---------- Hero, experience mode: twilight horizon, the road at your feet, two phones and a hug ---------- */
   function initHeroScene() {
@@ -665,7 +745,7 @@
     function apply(m) {
       document.documentElement.classList.toggle('mode-experience', m === 'experience');
       document.documentElement.classList.toggle('mode-simple', m !== 'experience');
-      if (m === 'experience') { moveExtras(); initHeroScene(); initDay3D(); musicButton(); }
+      if (m === 'experience') { moveExtras(); initHeroScene(); initDay3D(); initRibbons(); wireExperienceLinks(); musicButton(); }
     }
 
     /* Header switch. */
