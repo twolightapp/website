@@ -61,6 +61,10 @@ Defined as CSS variables in `style.css`. The site follows the visitor's light or
 - Tight letter-spacing on large headlines (about -.025em to -.035em). Eyebrows are 11px, 600, spaced out, in the accent color.
 - Body text is 17px at 1.6 line height. Keep captions and notes at 12px or larger.
 
+## Apple names and trademarks
+
+- Every page footer carries one line naming the Apple marks the site uses (Apple's "Guidelines for Using Apple Trademarks and Copyrights"). Registered marks use "registered in the U.S. and other countries and regions"; App Store and iCloud are service marks; Apple Intelligence is a trademark (not registered). If a page starts naming a new Apple product, add it to the line on every page. Use Apple names exactly as written, never plural or possessive, and never the Apple logo.
+
 ## Layout
 
 - Content width up to 1140px on the home page, 760px on text pages. Side padding 32px, or 24px under 760px.
