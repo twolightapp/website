@@ -70,7 +70,9 @@ footer { border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--m
 footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 footer a { color: var(--muted); }
 /* Apple trademark credit line (Apple's guidelines: list only the Apple marks the site uses; once per page footer). */
-footer .credit { flex-basis: 100%; margin: 4px 0 0; font-size: 12px; line-height: 1.5; color: var(--muted); max-width: 760px; }
+footer .credit { flex-basis: 100%; margin: 4px 0 0; font-size: 12px; line-height: 1.5; color: var(--muted); }
+/* Wider screens: centered under the footer row, in a readable measure. Phones keep it left, like the stacked footer. */
+@media (min-width: 761px) { footer .credit, .home footer .credit { max-width: 760px; margin: 12px auto 0; text-align: center; } }
 
 
 /* Website polish: shared readability and keyboard navigation. */
