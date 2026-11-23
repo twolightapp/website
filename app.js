@@ -515,6 +515,20 @@
 
   /* Links to a stop (#day-talk) travel along the path instead of jumping; "The app" goes to the bento. */
   function wireExperienceLinks() {
+    /* Land on the hero: don't restore an old scroll spot, and don't honor a leftover #day from 'Start the day'. */
+    try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
+    if (location.hash === '#day' || location.hash === '#features') {
+      history.replaceState(null, '', location.pathname + location.search);
+      window.scrollTo(0, 0);
+    }
+    /* In-page jumps scroll smoothly without leaving a hash behind. */
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href="#day"], a[href="#features"]');
+      if (!a) return;
+      var t = document.querySelector(a.getAttribute('href')); if (!t) return;
+      e.preventDefault();
+      t.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    });
     document.addEventListener('click', function (e) {
       var a = e.target.closest && e.target.closest('a[href^="#day-"]');
       if (a && dayGoTo && dayGoTo(a.getAttribute('href').slice(1))) e.preventDefault();
