@@ -63,10 +63,6 @@ footer a { color: var(--muted); }
 footer .credit { flex-basis: 100%; margin: 4px 0 0; font-size: 12px; line-height: 1.5; color: var(--muted); }
 /* Wider screens: centered under the footer row, in a readable measure. Phones keep it left, like the stacked footer. */
 @media (min-width: 761px) { footer .credit, .home footer .credit { max-width: 760px; margin: 12px auto 0; text-align: center; } }
-/* Features coming in the next app version: a small asterisk and one note. Remove both once that version is out. */
-.soon { color: var(--accent); font-weight: 600; margin-left: 2px; }
-.soon-note { margin: 10px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
-.all-features .soon-note { padding: 0 24px 20px; margin: 0; }
 
 
 /* Website polish: shared readability and keyboard navigation. */
@@ -991,10 +987,6 @@ details p { color: var(--muted); line-height: 1.7; }
 .mode-experience body.home > header .music-btn.waiting, .music-btn.waiting { color: #f6b089; border-color: #f6b089; opacity: 1; }
 /* Flowers stop: the drawn bouquet is a sketch; say the app's flowers are real 3D models. */
 .bq-real { margin: 12px 0 0; font-size: 13px; line-height: 1.45; color: var(--muted); }
-/* Coming-soon note inside a day stop and under the bento (remove once 1.1 is out). */
-.moment-copy .soon-note { margin-top: 10px; }
-.day-3d .moment-copy .soon-note { color: #d9cfc5; }
-.bento-soon { margin-top: 16px; }
 /* 3:30 PM stop: Alex's favorites and the usual popping up at the coffee shop. */
 .order-play { display: grid; gap: 8px; }
 .order-cap { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
